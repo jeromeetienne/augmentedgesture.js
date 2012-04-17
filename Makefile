@@ -12,9 +12,7 @@ deploy:
 build:
 	echo				 > build/augmentedgesture.js
 	cat src/augmentedgesture.js	>> build/augmentedgesture.js
-	cat src/option.js		>> build/augmentedgesture.js
 	cat src/gesturerecognition.js	>> build/augmentedgesture.js
-	cat src/handleDatGui.js	 	>> build/augmentedgesture.js
 
 minify: build
 	curl --data-urlencode "js_code@build/augmentedgesture.js" 	\

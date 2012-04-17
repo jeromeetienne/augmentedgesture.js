@@ -228,7 +228,7 @@ ImgProc.windowedAverageHistogram	= function(hist, width)
 
 	for(var i = 0; i < hist.length; i++){
 		// update window forward
-		if( i + halfW <= hist.length ){	
+		if( i + halfW < hist.length ){	
 			winSum	+= origHist[i+halfW];
 			winLen	++;
 		}
@@ -237,7 +237,7 @@ ImgProc.windowedAverageHistogram	= function(hist, width)
 			winSum	-= origHist[i-halfW];
 			winLen	--;
 		}
-		// 
+		// compute the actual value
 		hist[i]	= winSum/winLen;
 	}
 }

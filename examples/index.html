@@ -6,7 +6,6 @@
 <script src="../vendor/dat.gui/dat.gui.js"></script>
 
 <script src="../src/augmentedgesture.js"></script>
-<script src="../src/option.js"></script>
 <script src="../src/gesturerecognition.js"></script>
 
 <!--<script src="../build/augmentedgesture.js"></script>
@@ -15,13 +14,14 @@
 	var aGesture	= new AugmentedGesture().start();
 	//aGesture.start();
 	aGesture.enableDatGui();
+
 	//setTimeout(function(){
 	//	aGesture.destroy();
 	//}, 2000)
 
 	// put the debug texture on top
-	aGesture.domElementThumbnail();
-	
+	//aGesture.domElementThumbnail();
+	aGesture.domElementFullpage();
 	
 
 	//aGesture.bind('update', function(pointerR, pointerL){

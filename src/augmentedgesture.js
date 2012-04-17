@@ -151,6 +151,80 @@ AugmentedGesture.prototype.domElementRemove	= function(){
 //										//
 //////////////////////////////////////////////////////////////////////////////////
 
+AugmentedGesture.Options	= function(){
+	this.general	= {
+		video	: {
+			w		: 320/4,
+			h		: 240/4,
+			frameRate	: 1
+		}
+	};
+	this.right	= {
+		pointer	: {
+			display		: true,
+			coordSmoothV	: 0.3,
+			coordSmoothH	: 0.3
+		},
+		disp	: {
+			enable	: false,
+			VHist	: false,
+			HHist	: false,
+			VLine	: false,
+			HLine	: false
+		},
+		colorFilter	: {
+			r	: {
+				min	: 235,
+				max	: 255
+			},
+			g	: {
+				min	: 202,
+				max	: 255
+			},
+			b	: {
+				min	:  72,
+				max	: 255
+			}
+		},
+		smooth	: {
+			vWidth	: 9,
+			hWidth	: 9
+		}
+	};
+	this.left	= {
+		pointer	: {
+			display		: false,
+			coordSmoothV	: 0.3,
+			coordSmoothH	: 0.3
+		},
+		disp	: {
+			enable	: false,
+			VHist	: false,
+			HHist	: false,
+			VLine	: false,
+			HLine	: false
+		},
+		colorFilter	: {
+			r	: {
+				min	:   0,
+				max	:  80
+			},
+			g	: {
+				min	:  70,
+				max	: 255
+			},
+			b	: {
+				min	:   0,
+				max	: 113
+			}
+		},
+		smooth	: {
+			vWidth	: 9,
+			hWidth	: 9
+		}
+	};
+};
+
 AugmentedGesture.prototype.enableDatGui	= function(){
 	var guiOpts	= this._opts;
 	window.addEventListener('load', function(){
@@ -217,8 +291,6 @@ AugmentedGesture.prototype.enableDatGui	= function(){
 	});
 	return this;	// for chained API
 };
-
-
 
 //////////////////////////////////////////////////////////////////////////////////
 //		Getter								//
@@ -329,6 +401,15 @@ AugmentedGesture.prototype._update	= function()
 	if( guiOpts.left.disp.HLine )	ImgProc.hline(imageData, maxHLeft.idx, 0, 255, 0);
 
 // pointer Right
+/*
+ * Note on makeing the pointer not always valid
+ * - what about the follow algo
+ * - if maxVRight.max < guiOpts.right.threshold.minVhist then maxVRight.idx is invalid
+ * - if maxHRight.max < guiOpts.right.threshold.minHhist then maxHRight.idx is invalid
+ * - ok but what to do when one is invalid ?
+ *   - do i invalid the pointer all together ?
+ *
+*/
 	var pointerR	= this._pointerR;
 	pointerR.x	+= (maxVRight.idx - pointerR.x) * guiOpts.right.pointer.coordSmoothV;
 	pointerR.y	+= (maxHRight.idx - pointerR.y) * guiOpts.right.pointer.coordSmoothH;
