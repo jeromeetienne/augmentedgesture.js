@@ -408,7 +408,18 @@ AugmentedGesture.prototype._update	= function()
  * - if maxHRight.max < guiOpts.right.threshold.minHhist then maxHRight.idx is invalid
  * - ok but what to do when one is invalid ?
  *   - do i invalid the pointer all together ?
- *
+ *   - when pointer is invalid how to put it back
+*/
+/**
+ * what if i do
+ * - if maxVRight.max < guiOpts.right.threshold.minVhist then pointerR === null
+ * - if >= and pointerR then normal update
+ * - if >= and pointerR === null then jump direction to maxVRight position
+ * - trigger event for pointerUp pointerDown, pointerMove
+*/
+
+/**
+ * Once you got that you can do $1 gesture recognition
 */
 	var pointerR	= this._pointerR;
 	pointerR.x	+= (maxVRight.idx - pointerR.x) * guiOpts.right.pointer.coordSmoothV;
