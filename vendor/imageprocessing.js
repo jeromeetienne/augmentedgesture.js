@@ -292,7 +292,7 @@ ImgProc.displayVerticalHistogram	= function(imageData, hist)
 		ctx.fillRect(x, h-hist[x], 1, hist[x]);
 	}
 	// copy the canvas in imageData
-	var srcImgData	= ctx.getImgProc(0,0, canvas.width, canvas.height);
+	var srcImgData	= ctx.getImageData(0,0, canvas.width, canvas.height);
 	var pSrc	= srcImgData.data;
 	var pDst	= imageData.data;
 	for(var i = 0; i < pSrc.length; i += 4){
@@ -343,7 +343,7 @@ ImgProc.displayHorizontalHistogram	= function(imageData, hist)
 		ctx.fillRect(0, y, hist[y], 1);
 	}
 	// copy the canvas in imageData
-	var srcImgData	= ctx.getImgProc(0,0, canvas.width, canvas.height);
+	var srcImgData	= ctx.getImageData(0,0, canvas.width, canvas.height);
 	var pSrc	= srcImgData.data;
 	var pDst	= imageData.data;
 	for(var i = 0; i < pSrc.length; i += 4){
@@ -448,7 +448,7 @@ ImgProc.displayColorHistogram	= function(imageData, colorHistogram)
 		ctx.fillRect(i*barW, barYOffset+(barH-valH), barW, valH);
 	}
 
-	var srcImgData	= ctx.getImgProc(0,0, canvas.width, canvas.height);
+	var srcImgData	= ctx.getImageData(0,0, canvas.width, canvas.height);
 	var pSrc	= srcImgData.data;
 	var pDst	= imageData.data;
 	for(var i = 0; i < pSrc.length; i += 4){

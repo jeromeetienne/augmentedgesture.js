@@ -11,14 +11,15 @@ deploy:
 
 build:
 	echo				 > build/augmentedgesture.js
-	cat augmentedgesture.js		>> build/augmentedgesture.js
-	cat gesturerecognition.js	>> build/augmentedgesture.js
-	cat handleDatGui.js	 	>> build/augmentedgesture.js
+	cat src/augmentedgesture.js	>> build/augmentedgesture.js
+	cat src/option.js		>> build/augmentedgesture.js
+	cat src/gesturerecognition.js	>> build/augmentedgesture.js
+	cat src/handleDatGui.js	 	>> build/augmentedgesture.js
 
 minify: build
 	curl --data-urlencode "js_code@build/augmentedgesture.js" 	\
 		-d "output_format=text&output_info=compiled_code&compilation_level=SIMPLE_OPTIMIZATIONS" \
-		http://closure-compiler.appspot.com/compile	\
+		http://closure-compiler.appspot.com/compile		\
 		>> build/augmentedgesture.min.js
 	@echo size minified + gzip is `gzip -c build/augmentedgesture.min.js | wc -c` byte
 	

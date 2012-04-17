@@ -5,16 +5,16 @@
 
 <script src="../vendor/dat.gui/dat.gui.js"></script>
 
-<script src="../augmentedgesture.js"></script>
-<script src="../gesturerecognition.js"></script>
-<script src="../handleDatGui.js"></script>
+<script src="../src/augmentedgesture.js"></script>
+<script src="../src/option.js"></script>
+<script src="../src/gesturerecognition.js"></script>
 
 <!--<script src="../build/augmentedgesture.js"></script>
 -->
 <body><script>
 	var aGesture	= new AugmentedGesture().start();
 	//aGesture.start();
-	
+	aGesture.enableDatGui();
 	//setTimeout(function(){
 	//	aGesture.destroy();
 	//}, 2000)
