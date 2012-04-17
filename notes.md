@@ -1,7 +1,7 @@
 # notes taken during plane from sfo
 
 * what is the future of augmentedgesture.js
-* what remain to be done ?
+* what remain to be done ? in which field ? the fields seem to be:
   * code
   * examples
   * communication
@@ -13,6 +13,8 @@
   * So the pointer must be configurable
   * handle that in dat.gui too
 * code the minimal value for marker too
+* which kind of marker are possible
+  * anything kindof round with a flashy distinctive color
 
 # event refactoring
 * from a code point of view, change it to mouseup, mousedown, mousemove ?
@@ -31,6 +33,14 @@
 * some super simple examples for educational purpose
 * some link with various possibilities
   * link to be an actual mouse pointer
+* is that possible to simulate mouse pointer from javascript ?
+
+## ideas of example
+* link with $1 gesture recognition seems a cool test
+* a extension chrome where i navigate page ?
+* find some actual case which can be reused externally
+* a way to navigate slides ?
+  * nice for demo
 
 
 
