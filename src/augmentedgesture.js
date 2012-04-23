@@ -350,23 +350,23 @@ AugmentedGesture.prototype._update	= function()
 		ImgProc.threshold(tmpImgData, pointerOpts.colorFilter.r, pointerOpts.colorFilter.g, pointerOpts.colorFilter.b);
 		if( pointerOpts.disp.enable )	imageData	= tmpImgData;
 		// horizontal coord X discovery
-		var hist	= ImgProc.computeVerticalHistogram(tmpImgData, function(p, i){
-			return p[i+1] !== 0 ? true : false;
-		});
-		ImgProc.windowedAverageHistogram(hist, pointerOpts.smooth.vWidth);
-		var maxVRight	= ImgProc.getMaxHistogram(hist);
-		if( pointerOpts.disp.VHist )	ImgProc.displayVerticalHistogram(imageData, hist);
-		// horizontal coord Y discovery
 		var hist	= ImgProc.computeHorizontalHistogram(tmpImgData, function(p, i){
 			return p[i+1] !== 0 ? true : false;
 		});
+		ImgProc.windowedAverageHistogram(hist, pointerOpts.smooth.vWidth);
+		var maxH	= ImgProc.getMaxHistogram(hist);
+		if( pointerOpts.disp.VHist )	ImgProc.displayHorizontalHistogram(imageData, hist);
+		// horizontal coord Y discovery
+		var hist	= ImgProc.computeVerticalHistogram(tmpImgData, function(p, i){
+			return p[i+1] !== 0 ? true : false;
+		});
 		ImgProc.windowedAverageHistogram(hist, pointerOpts.smooth.hWidth);
-		var maxHRight	= ImgProc.getMaxHistogram(hist);
-		if( pointerOpts.disp.HHist )	ImgProc.displayHorizontalHistogram(imageData, hist);
+		var maxV	= ImgProc.getMaxHistogram(hist);
+		if( pointerOpts.disp.HHist )	ImgProc.displayVerticalHistogram(imageData, hist);
 	
 		return {
-			maxH	: maxHRight,
-			maxV	: maxVRight
+			h	: maxV,
+			v	: maxH
 		};
 	}
 
@@ -375,21 +375,21 @@ AugmentedGesture.prototype._update	= function()
 	var pointerId	= 'right';
 	var pointerLoc	= processImageToPointer(pointerId)
 	pointersMax[pointerId]	= {
-		h	: pointerLoc.maxH,
-		v	: pointerLoc.maxV
+		h	: pointerLoc.h,
+		v	: pointerLoc.c
 	};
-	var maxHRight	= pointerLoc.maxH;
-	var maxVRight	= pointerLoc.maxV;
+	var maxHRight	= pointerLoc.h;
+	var maxVRight	= pointerLoc.v;
 
 // Left
 	var pointerId	= 'left';
 	var pointerLoc	= processImageToPointer(pointerId)
 	pointersMax[pointerId]	= {
-		h	: pointerLoc.maxH,
-		v	: pointerLoc.maxV
+		h	: pointerLoc.h,
+		v	: pointerLoc.v
 	};
-	var maxHLeft	= pointerLoc.maxH;
-	var maxVLeft	= pointerLoc.maxV;
+	var maxHLeft	= pointerLoc.h;
+	var maxVLeft	= pointerLoc.v;
 
 // Display Crosses
 	// right

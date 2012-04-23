@@ -260,7 +260,7 @@ ImgProc.getMaxHistogram	= function(hist, imageData)
 //										//
 //////////////////////////////////////////////////////////////////////////////////
 
-ImgProc.computeVerticalHistogram	= function(imageData, filter)
+ImgProc.computeHorizontalHistogram	= function(imageData, filter)
 {
 	var p	= imageData.data;
 	var w	= imageData.width;
@@ -275,7 +275,7 @@ ImgProc.computeVerticalHistogram	= function(imageData, filter)
 	return hist;
 }
 
-ImgProc.displayVerticalHistogram	= function(imageData, hist)
+ImgProc.displayHorizontalHistogram	= function(imageData, hist)
 {
 	var p	= imageData.data;
 	var w	= imageData.width;
@@ -311,7 +311,7 @@ ImgProc.displayVerticalHistogram	= function(imageData, hist)
 //										//
 //////////////////////////////////////////////////////////////////////////////////
 
-ImgProc.computeHorizontalHistogram	= function(imageData, filter)
+ImgProc.computeVerticalHistogram	= function(imageData, filter)
 {
 	var p	= imageData.data;
 	var w	= imageData.width;
@@ -326,7 +326,7 @@ ImgProc.computeHorizontalHistogram	= function(imageData, filter)
 	return hist;
 }
 
-ImgProc.displayHorizontalHistogram	= function(imageData, hist)
+ImgProc.displayVerticalHistogram	= function(imageData, hist)
 {
 	var p	= imageData.data;
 	var w	= imageData.width;
