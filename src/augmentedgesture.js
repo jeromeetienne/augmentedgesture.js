@@ -24,9 +24,6 @@ AugmentedGesture	= function(opts){
 	this._pointers		= {};
 	this._pointers['right']	= { x : canvas.width/2, y : canvas.height/2	};
 	this._pointers['left']	= { x : canvas.width/2, y : canvas.height/2	};
-
-	this._pointerR	= { x : canvas.width/2, y : canvas.height/2	};
-	this._pointerL	= { x : canvas.width/2,	y : canvas.height/2	};
 };
 
 /**
@@ -78,6 +75,9 @@ AugmentedGesture.MicroeventMixin(AugmentedGesture.prototype);
 //		Start/Stop							//
 //////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * Start monitoring the video
+*/
 AugmentedGesture.prototype.start	= function(){
 	// define the callback
 	var updateFn	 = function(){
@@ -90,6 +90,9 @@ AugmentedGesture.prototype.start	= function(){
 	return this;
 }
 
+/**
+ * Stop monitoring the video
+*/
 AugmentedGesture.prototype.stop	= function(){
 	cancelAnimationFrame(this._reqAnimId);
 	// for chained api
@@ -288,11 +291,11 @@ AugmentedGesture.prototype.domElement	= function(){
 }
 
 AugmentedGesture.prototype.pointerR	= function(){
-	return this._pointerR;
+	return this._pointers['right'];
 }
 
 AugmentedGesture.prototype.pointerL	= function(){
-	return this._pointerL;
+	return this._pointers['left'];
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -329,14 +332,13 @@ AugmentedGesture.prototype._update	= function()
 	if( this._video.readyState !== this._video.HAVE_ENOUGH_DATA )	return;
 	
 	// update canvas size if needed
-	if( canvas.width != guiOpts.general.video.w )	canvas.width	= guiOpts.general.video.w;
+	if( canvas.width  != guiOpts.general.video.w )	canvas.width	= guiOpts.general.video.w;
 	if( canvas.height != guiOpts.general.video.h )	canvas.height	= guiOpts.general.video.h;
 	
 	// draw video into a canvas2D
 	ctx.drawImage(this._video, 0, 0, canvas.width, canvas.height);
 
 	var imageData	= ctx.getImageData(0,0, canvas.width, canvas.height);
-
 	// flip horizontal 
 	ImgProc.fliph(imageData);
 	//ImgProc.luminance(imageData);
@@ -368,29 +370,40 @@ AugmentedGesture.prototype._update	= function()
 		};
 	}
 
+	var pointersMax	= {};
 // Right
 	var pointerId	= 'right';
 	var pointerLoc	= processImageToPointer(pointerId)
+	pointersMax[pointerId]	= {
+		h	: pointerLoc.maxH,
+		v	: pointerLoc.maxV
+	};
 	var maxHRight	= pointerLoc.maxH;
 	var maxVRight	= pointerLoc.maxV;
 
 // Left
 	var pointerId	= 'left';
 	var pointerLoc	= processImageToPointer(pointerId)
+	pointersMax[pointerId]	= {
+		h	: pointerLoc.maxH,
+		v	: pointerLoc.maxV
+	};
 	var maxHLeft	= pointerLoc.maxH;
 	var maxVLeft	= pointerLoc.maxV;
-	
+
 // Display Crosses
 	// right
 	var pointerId	= 'right';
 	var pointerOpts	= guiOpts.pointers[pointerId];
-	if( pointerOpts.disp.VLine )	ImgProc.vline(imageData, maxVRight.idx, 0, 0, 255);
-	if( pointerOpts.disp.HLine )	ImgProc.hline(imageData, maxHRight.idx, 0, 0, 255);
+	var pointerMax	= pointersMax[pointerId];
+	if( pointerOpts.disp.HLine )	ImgProc.hline(imageData, pointerMax.h.idx, 0, 0, 255);
+	if( pointerOpts.disp.VLine )	ImgProc.vline(imageData, pointerMax.v.idx, 0, 0, 255);
 	// left
 	var pointerId	= 'left';
 	var pointerOpts	= guiOpts.pointers[pointerId];
-	if( pointerOpts.disp.VLine )	ImgProc.vline(imageData, maxVLeft.idx, 0, 255, 0);
-	if( pointerOpts.disp.HLine )	ImgProc.hline(imageData, maxHLeft.idx, 0, 255, 0);
+	var pointerMax	= pointersMax[pointerId];
+	if( pointerOpts.disp.HLine )	ImgProc.hline(imageData, pointerMax.h.idx, 0, 255, 0);
+	if( pointerOpts.disp.VLine )	ImgProc.vline(imageData, pointerMax.v.idx, 0, 255, 0);
 
 // pointer Right
 /*
@@ -414,8 +427,9 @@ AugmentedGesture.prototype._update	= function()
  * Once you got that you can do $1 gesture recognition
 */
 	var pointerId	= 'right';
-	var pointerPos	= this._pointerR;
+	var pointerPos	= this._pointers[pointerId];
 	var pointerOpts	= guiOpts.pointers[pointerId];
+	var pointerMax	= pointersMax[pointerId];
 	pointerPos.x	+= (maxVRight.idx - pointerPos.x) * pointerOpts.pointer.coordSmoothV;
 	pointerPos.y	+= (maxHRight.idx - pointerPos.y) * pointerOpts.pointer.coordSmoothH;
 	if( pointerOpts.pointer.display ){
@@ -424,7 +438,7 @@ AugmentedGesture.prototype._update	= function()
 	}
 // pointer Left
 	var pointerId	= 'left';
-	var pointerPos	= this._pointerL;
+	var pointerPos	= this._pointers[pointerId];
 	var pointerOpts	= guiOpts.pointers[pointerId];
 	pointerPos.x	+= (maxVLeft.idx - pointerPos.x) * pointerOpts.pointer.coordSmoothV;
 	pointerPos.y	+= (maxHLeft.idx - pointerPos.y) * pointerOpts.pointer.coordSmoothH;
@@ -436,6 +450,6 @@ AugmentedGesture.prototype._update	= function()
 	// update the canvas
 	ctx.putImageData(imageData, 0, 0);
 	// notify the event
-	this.trigger('update', this._pointerR, this._pointerL);
+	this.trigger('update', this._pointers['right'], this._pointers['left']);
 }
 
