@@ -159,7 +159,8 @@ AugmentedGesture.Options	= function(){
 			frameRate	: 1
 		}
 	};
-	this.right	= {
+	this.pointers	= {};
+	this.pointers['right']	= {
 		pointer	: {
 			display		: true,
 			coordSmoothV	: 0.3,
@@ -174,16 +175,16 @@ AugmentedGesture.Options	= function(){
 		},
 		colorFilter	: {
 			r	: {
-				min	: 235,
+				min	: 151,
 				max	: 255
 			},
 			g	: {
-				min	: 202,
+				min	: 0,
 				max	: 255
 			},
 			b	: {
-				min	:  72,
-				max	: 255
+				min	:  0,
+				max	:  90
 			}
 		},
 		smooth	: {
@@ -191,9 +192,9 @@ AugmentedGesture.Options	= function(){
 			hWidth	: 9
 		}
 	};
-	this.left	= {
+	this.pointers['left']	= {
 		pointer	: {
-			display		: false,
+			display		: true,
 			coordSmoothV	: 0.3,
 			coordSmoothH	: 0.3
 		},
@@ -207,15 +208,15 @@ AugmentedGesture.Options	= function(){
 		colorFilter	: {
 			r	: {
 				min	:   0,
-				max	:  80
+				max	:  90
 			},
 			g	: {
-				min	:  70,
+				min	: 120,
 				max	: 255
 			},
 			b	: {
-				min	:   0,
-				max	: 113
+				min	:  20,
+				max	: 255
 			}
 		},
 		smooth	: {
@@ -227,67 +228,49 @@ AugmentedGesture.Options	= function(){
 
 AugmentedGesture.prototype.enableDatGui	= function(){
 	var guiOpts	= this._opts;
+	// to add a pointer to guiOpts
+	function addGuiPointer(gui, pointerId){
+		var pointerOpts	= guiOpts.pointers[pointerId];
+		var mainFolder	= gui.addFolder("Pointer: "+pointerId);
+		// pointer folder
+		mainFolder.add(pointerOpts.pointer	, 'display');
+		mainFolder.add(pointerOpts.pointer	, 'coordSmoothV', 0, 1);
+		mainFolder.add(pointerOpts.pointer	, 'coordSmoothH', 0, 1);
+		// Right folder
+		var folder	= mainFolder.addFolder('Display');
+		//folder.open();
+		folder.add(pointerOpts.disp	, 'enable');
+		folder.add(pointerOpts.disp	, 'HHist');
+		folder.add(pointerOpts.disp	, 'VHist');
+		folder.add(pointerOpts.disp	, 'HLine');
+		folder.add(pointerOpts.disp	, 'VLine');
+		// Threshold folder
+		var folder	= mainFolder.addFolder('Threshold');
+		//folder.open();
+		folder.add(pointerOpts.colorFilter.r	, 'min', 0, 255).name('red min');
+		folder.add(pointerOpts.colorFilter.r	, 'max', 0, 255).name('red max');
+		folder.add(pointerOpts.colorFilter.g	, 'min', 0, 255).name('green min');
+		folder.add(pointerOpts.colorFilter.g	, 'max', 0, 255).name('green max');
+		folder.add(pointerOpts.colorFilter.b	, 'min', 0, 255).name('blue min');
+		folder.add(pointerOpts.colorFilter.b	, 'max', 0, 255).name('blue max');
+		folder.add(pointerOpts.smooth		, 'hWidth', 0, 20).step(1);
+		folder.add(pointerOpts.smooth		, 'vWidth', 0, 20).step(1);
+	}
+	// wait for the page to load before initializing it
 	window.addEventListener('load', function(){
 		var gui		= new dat.GUI();
-	// General folder
+		// General folder
 		var folder	= gui.addFolder('General');
 		//folder.open();
 		folder.add(guiOpts.general.video, 'w', 0, 320).step(40).name('videoW');
 		folder.add(guiOpts.general.video, 'h', 0, 240).step(30).name('videoH');
 		folder.add(guiOpts.general.video, 'frameRate', 1, 30).step(1);
-	
-	// Right pointer folder
-		var folder	= gui.addFolder('Right Pointer');
-		folder.add(guiOpts.right.pointer	, 'display');
-		folder.add(guiOpts.right.pointer	, 'coordSmoothV', 0, 1);
-		folder.add(guiOpts.right.pointer	, 'coordSmoothH', 0, 1);
-	// Right display folder
-		var folder	= gui.addFolder('Right Display');
-		//folder.open();
-		folder.add(guiOpts.right.disp	, 'enable');
-		folder.add(guiOpts.right.disp	, 'HHist');
-		folder.add(guiOpts.right.disp	, 'VHist');
-		folder.add(guiOpts.right.disp	, 'HLine');
-		folder.add(guiOpts.right.disp	, 'VLine');
-	// Right Threshold folder
-		var folder	= gui.addFolder('Right Threshold');
-		//folder.open();
-		folder.add(guiOpts.right.colorFilter.r	, 'min', 0, 255).name('red min');
-		folder.add(guiOpts.right.colorFilter.r	, 'max', 0, 255).name('red max');
-		folder.add(guiOpts.right.colorFilter.g	, 'min', 0, 255).name('green min');
-		folder.add(guiOpts.right.colorFilter.g	, 'max', 0, 255).name('green max');
-		folder.add(guiOpts.right.colorFilter.b	, 'min', 0, 255).name('blue min');
-		folder.add(guiOpts.right.colorFilter.b	, 'max', 0, 255).name('blue max');
-		folder.add(guiOpts.right.smooth		, 'hWidth', 0, 20).step(1);
-		folder.add(guiOpts.right.smooth		, 'vWidth', 0, 20).step(1);
-	
-	// Left pointer folder
-		var folder	= gui.addFolder('Left Pointer');
-		folder.add(guiOpts.left.pointer	, 'display');
-		folder.add(guiOpts.left.pointer	, 'coordSmoothV', 0, 1);
-		folder.add(guiOpts.left.pointer	, 'coordSmoothH', 0, 1);
-	// Left display folder
-		var folder	= gui.addFolder('Left Display');
-		//folder.open();
-		folder.add(guiOpts.left.disp	, 'enable');
-		folder.add(guiOpts.left.disp	, 'VHist');
-		folder.add(guiOpts.left.disp	, 'HHist');
-		folder.add(guiOpts.left.disp	, 'VLine');
-		folder.add(guiOpts.left.disp	, 'HLine');
-	// Left Threshold folder
-		var folder	= gui.addFolder('Left Threshold');
-		//folder.open();
-		folder.add(guiOpts.left.colorFilter.r	, 'min', 0, 255).name('red min');
-		folder.add(guiOpts.left.colorFilter.r	, 'max', 0, 255).name('red max');
-		folder.add(guiOpts.left.colorFilter.g	, 'min', 0, 255).name('green min');
-		folder.add(guiOpts.left.colorFilter.g	, 'max', 0, 255).name('green max');
-		folder.add(guiOpts.left.colorFilter.b	, 'min', 0, 255).name('blue min');
-		folder.add(guiOpts.left.colorFilter.b	, 'max', 0, 255).name('blue max');
-		folder.add(guiOpts.left.smooth		, 'vWidth', 0, 20).step(1);
-		folder.add(guiOpts.left.smooth		, 'hWidth', 0, 20).step(1);
-	
-	// try to save value but doesnt work
-		//gui.remember(guiOpts);
+
+		// add 2 pointers
+		addGuiPointer(gui, 'right');
+		addGuiPointer(gui, 'left');
+		// try to save value but doesnt work
+		//gui.remember(guiOpts);		
 	});
 	return this;	// for chained API
 };
@@ -354,65 +337,70 @@ AugmentedGesture.prototype._update	= function()
 	ImgProc.fliph(imageData);
 	//ImgProc.luminance(imageData);
 
-// Right
-	var rightData	= ImgProc.duplicate(imageData, ctx);
-	ImgProc.threshold(rightData, guiOpts.right.colorFilter.r, guiOpts.right.colorFilter.g, guiOpts.right.colorFilter.b);
-	if( guiOpts.right.disp.enable )	imageData	= rightData;
-	// horizontal coord X discovery
-	var hist	= ImgProc.computeVerticalHistogram(rightData, function(p, i){
-		return p[i+1] !== 0 ? true : false;
-	});
-	ImgProc.windowedAverageHistogram(hist, guiOpts.right.smooth.vWidth);
-	var maxVRight	= ImgProc.getMaxHistogram(hist);
-	if( guiOpts.right.disp.VHist )	ImgProc.displayVerticalHistogram(imageData, hist);
-	// horizontal coord Y discovery
-	var hist	= ImgProc.computeHorizontalHistogram(rightData, function(p, i){
-		return p[i+1] !== 0 ? true : false;
-	});
-	ImgProc.windowedAverageHistogram(hist, guiOpts.right.smooth.hWidth);
-	var maxHRight	= ImgProc.getMaxHistogram(hist);
-	if( guiOpts.right.disp.HHist )	ImgProc.displayHorizontalHistogram(imageData, hist);
+
+	function processImageToPointer(pointerId){
+		var tmpImgData	= ImgProc.duplicate(imageData, ctx);
+		var pointerOpts	= guiOpts.pointers[pointerId];
+		ImgProc.threshold(tmpImgData, pointerOpts.colorFilter.r, pointerOpts.colorFilter.g, pointerOpts.colorFilter.b);
+		if( pointerOpts.disp.enable )	imageData	= tmpImgData;
+		// horizontal coord X discovery
+		var hist	= ImgProc.computeVerticalHistogram(tmpImgData, function(p, i){
+			return p[i+1] !== 0 ? true : false;
+		});
+		ImgProc.windowedAverageHistogram(hist, pointerOpts.smooth.vWidth);
+		var maxVRight	= ImgProc.getMaxHistogram(hist);
+		if( pointerOpts.disp.VHist )	ImgProc.displayVerticalHistogram(imageData, hist);
+		// horizontal coord Y discovery
+		var hist	= ImgProc.computeHorizontalHistogram(tmpImgData, function(p, i){
+			return p[i+1] !== 0 ? true : false;
+		});
+		ImgProc.windowedAverageHistogram(hist, pointerOpts.smooth.hWidth);
+		var maxHRight	= ImgProc.getMaxHistogram(hist);
+		if( pointerOpts.disp.HHist )	ImgProc.displayHorizontalHistogram(imageData, hist);
 	
+		return {
+			maxH	: maxHRight,
+			maxV	: maxVRight
+		};
+	}
+
+// Right
+	var pointerId	= 'right';
+	var pointerLoc	= processImageToPointer(pointerId)
+	var maxHRight	= pointerLoc.maxH;
+	var maxVRight	= pointerLoc.maxV;
+
 // Left
-	var leftData	= ImgProc.duplicate(imageData, ctx);
-	ImgProc.threshold(leftData, guiOpts.left.colorFilter.r, guiOpts.left.colorFilter.g, guiOpts.left.colorFilter.b);
-	if( guiOpts.left.disp.enable )	imageData	= leftData;
-	// horizontal coord X discovery
-	var hist	= ImgProc.computeVerticalHistogram(leftData, function(p, i){
-		return p[i+1] !== 0 ? true : false;
-	});
-	ImgProc.windowedAverageHistogram(hist, guiOpts.left.smooth.vWidth);
-	var maxVLeft	= ImgProc.getMaxHistogram(hist);
-	if( guiOpts.left.disp.VHist )	ImgProc.displayVerticalHistogram(imageData, hist);
-	// horizontal coord Y discovery
-	var hist	= ImgProc.computeHorizontalHistogram(leftData, function(p, i){
-		return p[i+1] !== 0 ? true : false;
-	});
-	ImgProc.windowedAverageHistogram(hist, guiOpts.left.smooth.hWidth);
-	var maxHLeft	= ImgProc.getMaxHistogram(hist);
-	if( guiOpts.left.disp.HHist )	ImgProc.displayHorizontalHistogram(imageData, hist);
+	var pointerId	= 'left';
+	var pointerLoc	= processImageToPointer(pointerId)
+	var maxHLeft	= pointerLoc.maxH;
+	var maxVLeft	= pointerLoc.maxV;
 	
 // Display Crosses
 	// right
-	if( guiOpts.right.disp.VLine )	ImgProc.vline(imageData, maxVRight.idx, 0, 0, 255);
-	if( guiOpts.right.disp.HLine )	ImgProc.hline(imageData, maxHRight.idx, 0, 0, 255);
+	var pointerId	= 'right';
+	var pointerOpts	= guiOpts.pointers[pointerId];
+	if( pointerOpts.disp.VLine )	ImgProc.vline(imageData, maxVRight.idx, 0, 0, 255);
+	if( pointerOpts.disp.HLine )	ImgProc.hline(imageData, maxHRight.idx, 0, 0, 255);
 	// left
-	if( guiOpts.left.disp.VLine )	ImgProc.vline(imageData, maxVLeft.idx, 0, 255, 0);
-	if( guiOpts.left.disp.HLine )	ImgProc.hline(imageData, maxHLeft.idx, 0, 255, 0);
+	var pointerId	= 'left';
+	var pointerOpts	= guiOpts.pointers[pointerId];
+	if( pointerOpts.disp.VLine )	ImgProc.vline(imageData, maxVLeft.idx, 0, 255, 0);
+	if( pointerOpts.disp.HLine )	ImgProc.hline(imageData, maxHLeft.idx, 0, 255, 0);
 
 // pointer Right
 /*
  * Note on makeing the pointer not always valid
  * - what about the follow algo
- * - if maxVRight.max < guiOpts.right.threshold.minVhist then maxVRight.idx is invalid
- * - if maxHRight.max < guiOpts.right.threshold.minHhist then maxHRight.idx is invalid
+ * - if maxVRight.max < guiOpts.pointers['right'].threshold.minVhist then maxVRight.idx is invalid
+ * - if maxHRight.max < guiOpts.pointers['right'].threshold.minHhist then maxHRight.idx is invalid
  * - ok but what to do when one is invalid ?
  *   - do i invalid the pointer all together ?
  *   - when pointer is invalid how to put it back
 */
 /**
  * what if i do
- * - if maxVRight.max < guiOpts.right.threshold.minVhist then pointerR === null
+ * - if maxVRight.max < guiOpts.pointers['right'].threshold.minVhist then pointerR === null
  * - if >= and pointerR then normal update
  * - if >= and pointerR === null then jump direction to maxVRight position
  * - trigger event for pointerUp pointerDown, pointerMove
@@ -421,25 +409,29 @@ AugmentedGesture.prototype._update	= function()
 /**
  * Once you got that you can do $1 gesture recognition
 */
-	var pointerR	= this._pointerR;
-	pointerR.x	+= (maxVRight.idx - pointerR.x) * guiOpts.right.pointer.coordSmoothV;
-	pointerR.y	+= (maxHRight.idx - pointerR.y) * guiOpts.right.pointer.coordSmoothH;
-	if( guiOpts.right.pointer.display ){
-		ImgProc.vline(imageData, Math.floor(pointerR.x), 255, 0, 255);
-		ImgProc.hline(imageData, Math.floor(pointerR.y), 255, 0, 255);
+	var pointerId	= 'right';
+	var pointerPos	= this._pointerR;
+	var pointerOpts	= guiOpts.pointers[pointerId];
+	pointerPos.x	+= (maxVRight.idx - pointerPos.x) * pointerOpts.pointer.coordSmoothV;
+	pointerPos.y	+= (maxHRight.idx - pointerPos.y) * pointerOpts.pointer.coordSmoothH;
+	if( pointerOpts.pointer.display ){
+		ImgProc.vline(imageData, Math.floor(pointerPos.x), 255, 0, 255);
+		ImgProc.hline(imageData, Math.floor(pointerPos.y), 255, 0, 255);
 	}
 // pointer Left
-	var pointerL	= this._pointerL;
-	pointerL.x	+= (maxVLeft.idx - pointerL.x) * guiOpts.left.pointer.coordSmoothV;
-	pointerL.y	+= (maxHLeft.idx - pointerL.y) * guiOpts.left.pointer.coordSmoothH;
-	if( guiOpts.left.pointer.display ){
-		ImgProc.vline(imageData, Math.floor(pointerL.x), 255, 0, 0);
-		ImgProc.hline(imageData, Math.floor(pointerL.y), 255, 0, 0);
+	var pointerId	= 'left';
+	var pointerPos	= this._pointerL;
+	var pointerOpts	= guiOpts.pointers[pointerId];
+	pointerPos.x	+= (maxVLeft.idx - pointerPos.x) * pointerOpts.pointer.coordSmoothV;
+	pointerPos.y	+= (maxHLeft.idx - pointerPos.y) * pointerOpts.pointer.coordSmoothH;
+	if( pointerOpts.pointer.display ){
+		ImgProc.vline(imageData, Math.floor(pointerPos.x), 255, 0, 0);
+		ImgProc.hline(imageData, Math.floor(pointerPos.y), 255, 0, 0);
 	}
 
 	// update the canvas
 	ctx.putImageData(imageData, 0, 0);
 	// notify the event
-	this.trigger('update', pointerR, pointerL);
+	this.trigger('update', this._pointerR, this._pointerL);
 }
 
