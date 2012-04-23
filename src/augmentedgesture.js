@@ -21,6 +21,10 @@ AugmentedGesture	= function(opts){
 	canvas.height	= this._video.height	/4;
 	
 	// gesture recognition
+	this._pointers		= {};
+	this._pointers['right']	= { x : canvas.width/2, y : canvas.height/2	};
+	this._pointers['left']	= { x : canvas.width/2, y : canvas.height/2	};
+
 	this._pointerR	= { x : canvas.width/2, y : canvas.height/2	};
 	this._pointerL	= { x : canvas.width/2,	y : canvas.height/2	};
 };
