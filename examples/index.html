@@ -24,38 +24,10 @@
 	aGesture.domElementFullpage();
 	
 	setTimeout(function(){
-		aGesture.addPointer('Middle', {
-			pointer	: {
-				display		: true,
-				coordSmoothV	: 0.3,
-				coordSmoothH	: 0.3
-			},
-			disp	: {
-				enable	: false,
-				VHist	: false,
-				HHist	: false,
-				VLine	: false,
-				HLine	: false
-			},
-			colorFilter	: {
-				r	: {
-					min	: 151,
-					max	: 255
-				},
-				g	: {
-					min	: 0,
-					max	: 255
-				},
-				b	: {
-					min	:  0,
-					max	:  90
-				}
-			},
-			smooth	: {
-				vWidth	: 9,
-				hWidth	: 9
-			}
-		});		
+		return;
+		var pointerOpts	= new AugmentedGesture.OptionPointer();
+		pointerOpts.pointer.crossColor	= {r: 255, g: 0, b: 0};
+		aGesture.addPointer('Middle', pointerOpts);
 	}, 100)
 
 	//aGesture.bind('update', function(pointers){

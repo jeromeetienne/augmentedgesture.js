@@ -180,78 +180,31 @@ AugmentedGesture.Options	= function(){
 			frameRate	: 1
 		}
 	};
-	this.pointers	= {};
-	this.pointers['right']	= {
-		pointer	: {
-			display		: true,
-			coordSmoothV	: 0.3,
-			coordSmoothH	: 0.3
-		},
-		disp	: {
-			enable	: false,
-			VHist	: false,
-			HHist	: false,
-			VLine	: false,
-			HLine	: false
-		},
-		colorFilter	: {
-			r	: {
-				min	: 151,
-				max	: 255
-			},
-			g	: {
-				min	: 0,
-				max	: 255
-			},
-			b	: {
-				min	:  0,
-				max	:  90
-			}
-		},
-		smooth	: {
-			vWidth	: 9,
-			hWidth	: 9
-		}
-	};
-	this.pointers['left']	= {
-		pointer	: {
-			display		: true,
-			coordSmoothV	: 0.3,
-			coordSmoothH	: 0.3
-		},
-		disp	: {
-			enable	: false,
-			VHist	: false,
-			HHist	: false,
-			VLine	: false,
-			HLine	: false
-		},
-		colorFilter	: {
-			r	: {
-				min	:   0,
-				max	:  90
-			},
-			g	: {
-				min	: 120,
-				max	: 255
-			},
-			b	: {
-				min	:  20,
-				max	: 255
-			}
-		},
-		smooth	: {
-			vWidth	: 9,
-			hWidth	: 9
-		}
-	};
+	this.pointers	= {};	// each element of class AugmentedGesture.OptionPointer
+
+	// add a right pointer
+	var pointerId	= "right";
+	var pointerOpts	= this.pointers[pointerId]	= new AugmentedGesture.OptionPointer();
+	pointerOpts.pointer.crossColor	= {r:    0, g: 255, b:   0};
+	pointerOpts.colorFilter.r	= {min: 145, max: 255};
+	pointerOpts.colorFilter.g	= {min: 125, max: 255};
+	pointerOpts.colorFilter.b	= {min:   0, max:  90};
+
+	// add a left pointer
+	var pointerId	= "left";
+	var pointerOpts	= this.pointers[pointerId]	= new AugmentedGesture.OptionPointer();
+	pointerOpts.pointer.crossColor	= {r:    0, g: 255, b: 255};
+	pointerOpts.colorFilter.r	= {min: 145, max: 255};
+	pointerOpts.colorFilter.g	= {min:   0, max: 120};
+	pointerOpts.colorFilter.b	= {min:   0, max: 190};
 };
 
 AugmentedGesture.OptionPointer	= function(){
 	this.pointer	= {
 		display		: true,
 		coordSmoothV	: 0.3,
-		coordSmoothH	: 0.3
+		coordSmoothH	: 0.3,
+		crossColor	: {r: 0, g: 255, b: 255}
 	};
 	this.disp	= {
 		enable	: false,
@@ -310,6 +263,9 @@ AugmentedGesture.prototype._addDatGuiPointer	= function(gui, pointerId){
 	mainFolder.add(pointerOpts.pointer	, 'display');
 	mainFolder.add(pointerOpts.pointer	, 'coordSmoothV', 0, 1);
 	mainFolder.add(pointerOpts.pointer	, 'coordSmoothH', 0, 1);
+	mainFolder.add(pointerOpts.pointer.crossColor	, 'r', 0, 255).name('Cross ColorR');
+	mainFolder.add(pointerOpts.pointer.crossColor	, 'g', 0, 255).name('Cross ColorG');
+	mainFolder.add(pointerOpts.pointer.crossColor	, 'b', 0, 255).name('Cross ColorB');
 	// Right folder
 	var folder	= mainFolder.addFolder('Display');
 	//folder.open();
@@ -412,41 +368,29 @@ AugmentedGesture.prototype._update	= function()
 			h	: maxH,
 			v	: maxV
 		};
-	}
+	};
+	var processPointer	= function(pointerId){
+		var pointerOpts	= guiOpts.pointers[pointerId];
+		var pointerMax	= imageDataToPointer(imageData, pointerId);
+		// Display the cross
+		if( pointerOpts.disp.HLine )	ImgProc.hline(imageData, pointerMax.h.idx, 0, 255, 0);
+		if( pointerOpts.disp.VLine )	ImgProc.vline(imageData, pointerMax.v.idx, 0, 255, 0);
+		// move the pointer position
+		var pointerPos	= this._pointers[pointerId];
+		pointerPos.x	+= (pointerMax.h.idx - pointerPos.x) * pointerOpts.pointer.coordSmoothH;
+		pointerPos.y	+= (pointerMax.v.idx - pointerPos.y) * pointerOpts.pointer.coordSmoothV;
+		if( pointerOpts.pointer.display ){
+			var crossColor	= pointerOpts.pointer.crossColor;
+			ImgProc.vline(imageData, Math.floor(pointerPos.x), crossColor.r, crossColor.g, crossColor.b);
+			ImgProc.hline(imageData, Math.floor(pointerPos.y), crossColor.r, crossColor.g, crossColor.b);
+		}		
+	}.bind(this);
 
-	var pointersMax	= {};
-// Right
-	var pointerId	= 'right';
-	var pointerOpts	= guiOpts.pointers[pointerId];
-	var pointerMax	= pointersMax[pointerId] = imageDataToPointer(imageData, pointerId);
-	// Display the cross
-	if( pointerOpts.disp.HLine )	ImgProc.hline(imageData, pointerMax.h.idx, 0, 0, 255);
-	if( pointerOpts.disp.VLine )	ImgProc.vline(imageData, pointerMax.v.idx, 0, 0, 255);
-	// move the pointer position
-	var pointerPos	= this._pointers[pointerId];
-	pointerPos.x	+= (pointerMax.h.idx - pointerPos.x) * pointerOpts.pointer.coordSmoothH;
-	pointerPos.y	+= (pointerMax.v.idx - pointerPos.y) * pointerOpts.pointer.coordSmoothV;
-	if( pointerOpts.pointer.display ){
-		ImgProc.vline(imageData, Math.floor(pointerPos.x), 255, 0, 255);
-		ImgProc.hline(imageData, Math.floor(pointerPos.y), 255, 0, 255);
-	}
-
-// Left
-	var pointerId	= 'left';
-	var pointerOpts	= guiOpts.pointers[pointerId];
-	var pointerMax	= pointersMax[pointerId] = imageDataToPointer(imageData, pointerId);
-	// Display the cross
-	if( pointerOpts.disp.HLine )	ImgProc.hline(imageData, pointerMax.h.idx, 0, 255, 0);
-	if( pointerOpts.disp.VLine )	ImgProc.vline(imageData, pointerMax.v.idx, 0, 255, 0);
-	// move the pointer position
-	var pointerPos	= this._pointers[pointerId];
-	pointerPos.x	+= (pointerMax.h.idx - pointerPos.x) * pointerOpts.pointer.coordSmoothH;
-	pointerPos.y	+= (pointerMax.v.idx - pointerPos.y) * pointerOpts.pointer.coordSmoothV;
-	if( pointerOpts.pointer.display ){
-		ImgProc.vline(imageData, Math.floor(pointerPos.x), 255, 0, 0);
-		ImgProc.hline(imageData, Math.floor(pointerPos.y), 255, 0, 0);
-	}
-	
+	// Process all pointers
+	Object.keys(this._pointers).forEach(function(pointerId){
+		//console.log("pointerId", pointerId)
+		processPointer(pointerId);
+	});
 
 /*
  * Note on makeing the pointer not always valid
