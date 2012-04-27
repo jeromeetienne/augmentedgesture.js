@@ -165,11 +165,11 @@ AugmentedGesture.prototype.addPointer	= function(pointerId, pointerOpts){
 	console.assert( !this._opts.pointers[pointerId] );
 	this._opts.pointers[pointerId]	= pointerOpts;
 		
-	this._addDatGuiPointer(this._datgui, pointerId);
+	this._datgui && this._addDatGuiPointer(pointerId);
 }
 
 //////////////////////////////////////////////////////////////////////////////////
-//		Options and Dat.gui						//
+//		Options								//
 //////////////////////////////////////////////////////////////////////////////////
 
 AugmentedGesture.Options	= function(){
@@ -200,14 +200,14 @@ AugmentedGesture.OptionPointer	= function(){
 	this.colorFilter	= {
 		r	: {
 			min	:   0,
-			max	:  90
+			max	: 255
 		},
 		g	: {
-			min	: 120,
+			min	:   0,
 			max	: 255
 		},
 		b	: {
-			min	:  20,
+			min	:   0,
 			max	: 255
 		}
 	};
@@ -216,6 +216,10 @@ AugmentedGesture.OptionPointer	= function(){
 		hWidth	: 9
 	};
 };
+
+//////////////////////////////////////////////////////////////////////////////////
+//		Dat.gui								//
+//////////////////////////////////////////////////////////////////////////////////
 
 AugmentedGesture.prototype.enableDatGui	= function(){
 	var guiOpts	= this._opts;
@@ -228,6 +232,11 @@ AugmentedGesture.prototype.enableDatGui	= function(){
 		folder.add(guiOpts.general.video, 'h', 0, 240).step(30).name('videoH');
 		folder.add(guiOpts.general.video, 'frameRate', 1, 30).step(1);
 
+		// init all the pointer already init
+		Object.keys(this._pointers).forEach(function(pointerId){
+			this._addDatGuiPointer(pointerId);
+		}.bind(this));
+
 		// try to save value but doesnt work
 		//gui.remember(guiOpts);		
 	}.bind(this));
@@ -237,7 +246,9 @@ AugmentedGesture.prototype.disableDatGui	= function(){
 	this._datgui && this._datgui.destroy();
 }
 
-AugmentedGesture.prototype._addDatGuiPointer	= function(gui, pointerId){
+AugmentedGesture.prototype._addDatGuiPointer	= function(pointerId){
+	console.assert( this._datgui );
+	var gui		= this._datgui;
 	var guiOpts	= this._opts;
 	var pointerOpts	= guiOpts.pointers[pointerId];
 	var mainFolder	= gui.addFolder("Pointer: "+pointerId);
@@ -248,7 +259,7 @@ AugmentedGesture.prototype._addDatGuiPointer	= function(gui, pointerId){
 	mainFolder.add(pointerOpts.pointer.crossColor	, 'r', 0, 255).name('Cross ColorR');
 	mainFolder.add(pointerOpts.pointer.crossColor	, 'g', 0, 255).name('Cross ColorG');
 	mainFolder.add(pointerOpts.pointer.crossColor	, 'b', 0, 255).name('Cross ColorB');
-	// Right folder
+	// display folder
 	var folder	= mainFolder.addFolder('Display');
 	//folder.open();
 	folder.add(pointerOpts.disp	, 'enable');
