@@ -290,12 +290,8 @@ AugmentedGesture.prototype.domElement	= function(){
 	return this._canvas;
 }
 
-AugmentedGesture.prototype.pointerR	= function(){
-	return this._pointers['right'];
-}
-
-AugmentedGesture.prototype.pointerL	= function(){
-	return this._pointers['left'];
+AugmentedGesture.prototype.pointers	= function(){
+	return this._pointers;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -343,12 +339,12 @@ AugmentedGesture.prototype._update	= function()
 	ImgProc.fliph(imageData);
 	//ImgProc.luminance(imageData);
 
-
-	function processImageToPointer(pointerId){
+	
+	function imageDataToPointer(imageData, pointerId){
 		var tmpImgData	= ImgProc.duplicate(imageData, ctx);
 		var pointerOpts	= guiOpts.pointers[pointerId];
 		ImgProc.threshold(tmpImgData, pointerOpts.colorFilter.r, pointerOpts.colorFilter.g, pointerOpts.colorFilter.b);
-		if( pointerOpts.disp.enable )	imageData	= tmpImgData;
+		if( pointerOpts.disp.enable )	ImgProc.copy(tmpImgData, imageData);
 		// horizontal coord X discovery
 		var hist	= ImgProc.computeHorizontalHistogram(tmpImgData, function(p, i){
 			return p[i+1] !== 0 ? true : false;
@@ -363,49 +359,46 @@ AugmentedGesture.prototype._update	= function()
 		ImgProc.windowedAverageHistogram(hist, pointerOpts.smooth.hWidth);
 		var maxV	= ImgProc.getMaxHistogram(hist);
 		if( pointerOpts.disp.HHist )	ImgProc.displayVerticalHistogram(imageData, hist);
-	
 		return {
-			h	: maxV,
-			v	: maxH
+			h	: maxH,
+			v	: maxV
 		};
 	}
 
 	var pointersMax	= {};
 // Right
 	var pointerId	= 'right';
-	var pointerLoc	= processImageToPointer(pointerId)
-	pointersMax[pointerId]	= {
-		h	: pointerLoc.h,
-		v	: pointerLoc.c
-	};
-	var maxHRight	= pointerLoc.h;
-	var maxVRight	= pointerLoc.v;
+	var pointerOpts	= guiOpts.pointers[pointerId];
+	var pointerMax	= pointersMax[pointerId] = imageDataToPointer(imageData, pointerId);
+	// Display the cross
+	if( pointerOpts.disp.HLine )	ImgProc.hline(imageData, pointerMax.h.idx, 0, 0, 255);
+	if( pointerOpts.disp.VLine )	ImgProc.vline(imageData, pointerMax.v.idx, 0, 0, 255);
+	// move the pointer position
+	var pointerPos	= this._pointers[pointerId];
+	pointerPos.x	+= (pointerMax.h.idx - pointerPos.x) * pointerOpts.pointer.coordSmoothH;
+	pointerPos.y	+= (pointerMax.v.idx - pointerPos.y) * pointerOpts.pointer.coordSmoothV;
+	if( pointerOpts.pointer.display ){
+		ImgProc.vline(imageData, Math.floor(pointerPos.x), 255, 0, 255);
+		ImgProc.hline(imageData, Math.floor(pointerPos.y), 255, 0, 255);
+	}
 
 // Left
 	var pointerId	= 'left';
-	var pointerLoc	= processImageToPointer(pointerId)
-	pointersMax[pointerId]	= {
-		h	: pointerLoc.h,
-		v	: pointerLoc.v
-	};
-	var maxHLeft	= pointerLoc.h;
-	var maxVLeft	= pointerLoc.v;
-
-// Display Crosses
-	// right
-	var pointerId	= 'right';
 	var pointerOpts	= guiOpts.pointers[pointerId];
-	var pointerMax	= pointersMax[pointerId];
-	if( pointerOpts.disp.HLine )	ImgProc.hline(imageData, pointerMax.h.idx, 0, 0, 255);
-	if( pointerOpts.disp.VLine )	ImgProc.vline(imageData, pointerMax.v.idx, 0, 0, 255);
-	// left
-	var pointerId	= 'left';
-	var pointerOpts	= guiOpts.pointers[pointerId];
-	var pointerMax	= pointersMax[pointerId];
+	var pointerMax	= pointersMax[pointerId] = imageDataToPointer(imageData, pointerId);
+	// Display the cross
 	if( pointerOpts.disp.HLine )	ImgProc.hline(imageData, pointerMax.h.idx, 0, 255, 0);
 	if( pointerOpts.disp.VLine )	ImgProc.vline(imageData, pointerMax.v.idx, 0, 255, 0);
+	// move the pointer position
+	var pointerPos	= this._pointers[pointerId];
+	pointerPos.x	+= (pointerMax.h.idx - pointerPos.x) * pointerOpts.pointer.coordSmoothH;
+	pointerPos.y	+= (pointerMax.v.idx - pointerPos.y) * pointerOpts.pointer.coordSmoothV;
+	if( pointerOpts.pointer.display ){
+		ImgProc.vline(imageData, Math.floor(pointerPos.x), 255, 0, 0);
+		ImgProc.hline(imageData, Math.floor(pointerPos.y), 255, 0, 0);
+	}
+	
 
-// pointer Right
 /*
  * Note on makeing the pointer not always valid
  * - what about the follow algo
@@ -422,34 +415,12 @@ AugmentedGesture.prototype._update	= function()
  * - if >= and pointerR === null then jump direction to maxVRight position
  * - trigger event for pointerUp pointerDown, pointerMove
 */
-
 /**
  * Once you got that you can do $1 gesture recognition
 */
-	var pointerId	= 'right';
-	var pointerPos	= this._pointers[pointerId];
-	var pointerOpts	= guiOpts.pointers[pointerId];
-	var pointerMax	= pointersMax[pointerId];
-	pointerPos.x	+= (maxVRight.idx - pointerPos.x) * pointerOpts.pointer.coordSmoothV;
-	pointerPos.y	+= (maxHRight.idx - pointerPos.y) * pointerOpts.pointer.coordSmoothH;
-	if( pointerOpts.pointer.display ){
-		ImgProc.vline(imageData, Math.floor(pointerPos.x), 255, 0, 255);
-		ImgProc.hline(imageData, Math.floor(pointerPos.y), 255, 0, 255);
-	}
-// pointer Left
-	var pointerId	= 'left';
-	var pointerPos	= this._pointers[pointerId];
-	var pointerOpts	= guiOpts.pointers[pointerId];
-	pointerPos.x	+= (maxVLeft.idx - pointerPos.x) * pointerOpts.pointer.coordSmoothV;
-	pointerPos.y	+= (maxHLeft.idx - pointerPos.y) * pointerOpts.pointer.coordSmoothH;
-	if( pointerOpts.pointer.display ){
-		ImgProc.vline(imageData, Math.floor(pointerPos.x), 255, 0, 0);
-		ImgProc.hline(imageData, Math.floor(pointerPos.y), 255, 0, 0);
-	}
-
 	// update the canvas
 	ctx.putImageData(imageData, 0, 0);
 	// notify the event
-	this.trigger('update', this._pointers['right'], this._pointers['left']);
+	this.trigger('update', this._pointers);
 }
 

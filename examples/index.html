@@ -23,15 +23,51 @@
 	//aGesture.domElementThumbnail();
 	aGesture.domElementFullpage();
 	
+	aGesture.addPointer('right', {
+		pointer	: {
+			display		: true,
+			coordSmoothV	: 0.3,
+			coordSmoothH	: 0.3
+		},
+		disp	: {
+			enable	: false,
+			VHist	: false,
+			HHist	: false,
+			VLine	: false,
+			HLine	: false
+		},
+		colorFilter	: {
+			r	: {
+				min	: 151,
+				max	: 255
+			},
+			g	: {
+				min	: 0,
+				max	: 255
+			},
+			b	: {
+				min	:  0,
+				max	:  90
+			}
+		},
+		smooth	: {
+			vWidth	: 9,
+			hWidth	: 9
+		}
+	});
+	aGesture.addPointer('left', {
+	});
 
-	//aGesture.bind('update', function(pointerR, pointerL){
-	//	console.log("update")
+	//aGesture.bind('update', function(pointers){
+	//	console.log("update", pointers)
 	//});
 
-	//var gestureR	= new tQuery.GestureRecognition();
-	//var gestureL	= new tQuery.GestureRecognition();
-	//aGesture.bind('update', function(pointerR, pointerL){
-	//	var canvas	= aGesture.canvas();
+	//var gestureR	= new AugmentedGesture.GestureRecognition();
+	//var gestureL	= new AugmentedGesture.GestureRecognition();
+	//aGesture.bind('update', function(pointers){
+	//	var canvas	= aGesture.domElement();
+	//	var pointerR	= pointers['right'];
+	//	var pointerL	= pointers['left'];
 	//	var eventR	= gestureR.update(pointerR.x, pointerR.y, canvas.width, canvas.height);
 	//	var eventL	= gestureL.update(pointerL.x, pointerL.y, canvas.width, canvas.height);
 	//	if( eventR )	console.log("gesture RIGHT event", eventR)

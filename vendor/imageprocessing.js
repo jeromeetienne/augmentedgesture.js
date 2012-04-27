@@ -64,17 +64,31 @@ ImgProc.luminance	= function(imageData, ratio)
 /**
  * Duplicate the ImgProc
 */
-ImgProc.duplicate	= function(srcImgProc, ctx)
+ImgProc.duplicate	= function(srcImgData, ctx)
 {
-	var dstImgProc= ctx.createImageData(srcImgProc);
-	var pSrc	= srcImgProc.data;
-	var pDst	= dstImgProc.data;
+	var dstImgData	= ctx.createImageData(srcImgData);
+	var pSrc	= srcImgData.data;
+	var pDst	= dstImgData.data;
 	for(var i = 0; i < pSrc.length; i++){
 		pDst[i]	= pSrc[i];
 	}
-	return dstImgProc;
+	return dstImgData;
 }
 
+/**
+ * Duplicate the ImgProc
+*/
+ImgProc.copy	= function(srcImgData, dstImgData)
+{
+	console.assert(srcImgData.width === dstImgData.width );
+	console.assert(srcImgData.height === dstImgData.height );
+	var pSrc	= srcImgData.data;
+	var pDst	= dstImgData.data;
+	for(var i = 0; i < pSrc.length; i++){
+		pDst[i]	= pSrc[i];
+	}
+	return dstImgData;
+}
 
 //////////////////////////////////////////////////////////////////////////////////
 //										//
