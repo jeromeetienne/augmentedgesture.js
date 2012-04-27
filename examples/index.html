@@ -25,9 +25,13 @@
 	
 	setTimeout(function(){
 		return;
-		var pointerOpts	= new AugmentedGesture.OptionPointer();
-		pointerOpts.pointer.crossColor	= {r: 255, g: 0, b: 0};
-		aGesture.addPointer('Middle', pointerOpts);
+		var pointerId	= "right";
+		var pointerOpts	= this.pointers[pointerId]	= new AugmentedGesture.OptionPointer();
+		pointerOpts.pointer.crossColor	= {r:    0, g: 255, b:   0};
+		pointerOpts.colorFilter.r	= {min: 145, max: 255};
+		pointerOpts.colorFilter.g	= {min: 125, max: 255};
+		pointerOpts.colorFilter.b	= {min:   0, max:  90};
+		aGesture.addPointer(pointerId, pointerOpts);
 	}, 100)
 
 	//aGesture.bind('update', function(pointers){
