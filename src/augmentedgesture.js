@@ -155,7 +155,21 @@ AugmentedGesture.prototype.domElementRemove	= function(){
 }
 
 //////////////////////////////////////////////////////////////////////////////////
-//										//
+//		AddPointer							//
+//////////////////////////////////////////////////////////////////////////////////
+
+AugmentedGesture.prototype.addPointer	= function(pointerId, pointerOpts){
+	console.assert( !this._pointers[pointerId] );
+	this._pointers[pointerId]	= { x : this._canvas.width/2, y : this._canvas.height/2	};
+
+	console.assert( !this._opts.pointers[pointerId] );
+	this._opts.pointers[pointerId]	= pointerOpts;
+		
+	this._addDatGuiPointer(this._datgui, pointerId);
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+//		Options and Dat.gui						//
 //////////////////////////////////////////////////////////////////////////////////
 
 AugmentedGesture.Options	= function(){
@@ -233,39 +247,44 @@ AugmentedGesture.Options	= function(){
 	};
 };
 
+AugmentedGesture.OptionPointer	= function(){
+	this.pointer	= {
+		display		: true,
+		coordSmoothV	: 0.3,
+		coordSmoothH	: 0.3
+	};
+	this.disp	= {
+		enable	: false,
+		VHist	: false,
+		HHist	: false,
+		VLine	: false,
+		HLine	: false
+	};
+	this.colorFilter	= {
+		r	: {
+			min	:   0,
+			max	:  90
+		},
+		g	: {
+			min	: 120,
+			max	: 255
+		},
+		b	: {
+			min	:  20,
+			max	: 255
+		}
+	};
+	this.smooth	= {
+		vWidth	: 9,
+		hWidth	: 9
+	};
+};
+
 AugmentedGesture.prototype.enableDatGui	= function(){
 	var guiOpts	= this._opts;
-	// to add a pointer to guiOpts
-	function addGuiPointer(gui, pointerId){
-		var pointerOpts	= guiOpts.pointers[pointerId];
-		var mainFolder	= gui.addFolder("Pointer: "+pointerId);
-		// pointer folder
-		mainFolder.add(pointerOpts.pointer	, 'display');
-		mainFolder.add(pointerOpts.pointer	, 'coordSmoothV', 0, 1);
-		mainFolder.add(pointerOpts.pointer	, 'coordSmoothH', 0, 1);
-		// Right folder
-		var folder	= mainFolder.addFolder('Display');
-		//folder.open();
-		folder.add(pointerOpts.disp	, 'enable');
-		folder.add(pointerOpts.disp	, 'HHist');
-		folder.add(pointerOpts.disp	, 'VHist');
-		folder.add(pointerOpts.disp	, 'HLine');
-		folder.add(pointerOpts.disp	, 'VLine');
-		// Threshold folder
-		var folder	= mainFolder.addFolder('Threshold');
-		//folder.open();
-		folder.add(pointerOpts.colorFilter.r	, 'min', 0, 255).name('red min');
-		folder.add(pointerOpts.colorFilter.r	, 'max', 0, 255).name('red max');
-		folder.add(pointerOpts.colorFilter.g	, 'min', 0, 255).name('green min');
-		folder.add(pointerOpts.colorFilter.g	, 'max', 0, 255).name('green max');
-		folder.add(pointerOpts.colorFilter.b	, 'min', 0, 255).name('blue min');
-		folder.add(pointerOpts.colorFilter.b	, 'max', 0, 255).name('blue max');
-		folder.add(pointerOpts.smooth		, 'hWidth', 0, 20).step(1);
-		folder.add(pointerOpts.smooth		, 'vWidth', 0, 20).step(1);
-	}
 	// wait for the page to load before initializing it
 	window.addEventListener('load', function(){
-		var gui		= new dat.GUI();
+		var gui		= this._datgui	= new dat.GUI();
 		// General folder
 		var folder	= gui.addFolder('General');
 		//folder.open();
@@ -274,13 +293,43 @@ AugmentedGesture.prototype.enableDatGui	= function(){
 		folder.add(guiOpts.general.video, 'frameRate', 1, 30).step(1);
 
 		// add 2 pointers
-		addGuiPointer(gui, 'right');
-		addGuiPointer(gui, 'left');
+		this._addDatGuiPointer(gui, 'right');
+		this._addDatGuiPointer(gui, 'left');
 		// try to save value but doesnt work
 		//gui.remember(guiOpts);		
-	});
+	}.bind(this));
 	return this;	// for chained API
 };
+
+
+AugmentedGesture.prototype._addDatGuiPointer	= function(gui, pointerId){
+	var guiOpts	= this._opts;
+	var pointerOpts	= guiOpts.pointers[pointerId];
+	var mainFolder	= gui.addFolder("Pointer: "+pointerId);
+	// pointer folder
+	mainFolder.add(pointerOpts.pointer	, 'display');
+	mainFolder.add(pointerOpts.pointer	, 'coordSmoothV', 0, 1);
+	mainFolder.add(pointerOpts.pointer	, 'coordSmoothH', 0, 1);
+	// Right folder
+	var folder	= mainFolder.addFolder('Display');
+	//folder.open();
+	folder.add(pointerOpts.disp	, 'enable');
+	folder.add(pointerOpts.disp	, 'HHist');
+	folder.add(pointerOpts.disp	, 'VHist');
+	folder.add(pointerOpts.disp	, 'HLine');
+	folder.add(pointerOpts.disp	, 'VLine');
+	// Threshold folder
+	var folder	= mainFolder.addFolder('Threshold');
+	//folder.open();
+	folder.add(pointerOpts.colorFilter.r	, 'min', 0, 255).name('red min');
+	folder.add(pointerOpts.colorFilter.r	, 'max', 0, 255).name('red max');
+	folder.add(pointerOpts.colorFilter.g	, 'min', 0, 255).name('green min');
+	folder.add(pointerOpts.colorFilter.g	, 'max', 0, 255).name('green max');
+	folder.add(pointerOpts.colorFilter.b	, 'min', 0, 255).name('blue min');
+	folder.add(pointerOpts.colorFilter.b	, 'max', 0, 255).name('blue max');
+	folder.add(pointerOpts.smooth		, 'hWidth', 0, 20).step(1);
+	folder.add(pointerOpts.smooth		, 'vWidth', 0, 20).step(1);
+}
 
 //////////////////////////////////////////////////////////////////////////////////
 //		Getter								//

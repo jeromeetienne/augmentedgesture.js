@@ -23,40 +23,40 @@
 	//aGesture.domElementThumbnail();
 	aGesture.domElementFullpage();
 	
-	aGesture.addPointer('right', {
-		pointer	: {
-			display		: true,
-			coordSmoothV	: 0.3,
-			coordSmoothH	: 0.3
-		},
-		disp	: {
-			enable	: false,
-			VHist	: false,
-			HHist	: false,
-			VLine	: false,
-			HLine	: false
-		},
-		colorFilter	: {
-			r	: {
-				min	: 151,
-				max	: 255
+	setTimeout(function(){
+		aGesture.addPointer('Middle', {
+			pointer	: {
+				display		: true,
+				coordSmoothV	: 0.3,
+				coordSmoothH	: 0.3
 			},
-			g	: {
-				min	: 0,
-				max	: 255
+			disp	: {
+				enable	: false,
+				VHist	: false,
+				HHist	: false,
+				VLine	: false,
+				HLine	: false
 			},
-			b	: {
-				min	:  0,
-				max	:  90
+			colorFilter	: {
+				r	: {
+					min	: 151,
+					max	: 255
+				},
+				g	: {
+					min	: 0,
+					max	: 255
+				},
+				b	: {
+					min	:  0,
+					max	:  90
+				}
+			},
+			smooth	: {
+				vWidth	: 9,
+				hWidth	: 9
 			}
-		},
-		smooth	: {
-			vWidth	: 9,
-			hWidth	: 9
-		}
-	});
-	aGesture.addPointer('left', {
-	});
+		});		
+	}, 100)
 
 	//aGesture.bind('update', function(pointers){
 	//	console.log("update", pointers)
