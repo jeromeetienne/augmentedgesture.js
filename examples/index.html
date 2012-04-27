@@ -24,14 +24,21 @@
 	aGesture.domElementFullpage();
 	
 	setTimeout(function(){
-		return;
 		var pointerId	= "right";
-		var pointerOpts	= this.pointers[pointerId]	= new AugmentedGesture.OptionPointer();
+		var pointerOpts	= new AugmentedGesture.OptionPointer();
 		pointerOpts.pointer.crossColor	= {r:    0, g: 255, b:   0};
 		pointerOpts.colorFilter.r	= {min: 145, max: 255};
 		pointerOpts.colorFilter.g	= {min: 125, max: 255};
 		pointerOpts.colorFilter.b	= {min:   0, max:  90};
 		aGesture.addPointer(pointerId, pointerOpts);
+
+		//var pointerId	= "left";
+		//var pointerOpts	= new AugmentedGesture.OptionPointer();
+		//pointerOpts.pointer.crossColor	= {r:    0, g: 255, b: 255};
+		//pointerOpts.colorFilter.r	= {min: 145, max: 255};
+		//pointerOpts.colorFilter.g	= {min:   0, max: 120};
+		//pointerOpts.colorFilter.b	= {min:   0, max: 190};
+		//aGesture.addPointer(pointerId, pointerOpts);
 	}, 100)
 
 	//aGesture.bind('update', function(pointers){

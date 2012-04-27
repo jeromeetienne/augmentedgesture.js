@@ -21,9 +21,7 @@ AugmentedGesture	= function(opts){
 	canvas.height	= this._video.height	/4;
 	
 	// gesture recognition
-	this._pointers		= {};
-	this._pointers['right']	= { x : canvas.width/2, y : canvas.height/2	};
-	this._pointers['left']	= { x : canvas.width/2, y : canvas.height/2	};
+	this._pointers		= {};	// to store pointers coordinates
 };
 
 /**
@@ -181,22 +179,6 @@ AugmentedGesture.Options	= function(){
 		}
 	};
 	this.pointers	= {};	// each element of class AugmentedGesture.OptionPointer
-
-	// add a right pointer
-	var pointerId	= "right";
-	var pointerOpts	= this.pointers[pointerId]	= new AugmentedGesture.OptionPointer();
-	pointerOpts.pointer.crossColor	= {r:    0, g: 255, b:   0};
-	pointerOpts.colorFilter.r	= {min: 145, max: 255};
-	pointerOpts.colorFilter.g	= {min: 125, max: 255};
-	pointerOpts.colorFilter.b	= {min:   0, max:  90};
-
-	// add a left pointer
-	var pointerId	= "left";
-	var pointerOpts	= this.pointers[pointerId]	= new AugmentedGesture.OptionPointer();
-	pointerOpts.pointer.crossColor	= {r:    0, g: 255, b: 255};
-	pointerOpts.colorFilter.r	= {min: 145, max: 255};
-	pointerOpts.colorFilter.g	= {min:   0, max: 120};
-	pointerOpts.colorFilter.b	= {min:   0, max: 190};
 };
 
 AugmentedGesture.OptionPointer	= function(){
@@ -240,14 +222,10 @@ AugmentedGesture.prototype.enableDatGui	= function(){
 		var gui		= this._datgui	= new dat.GUI();
 		// General folder
 		var folder	= gui.addFolder('General');
-		//folder.open();
 		folder.add(guiOpts.general.video, 'w', 0, 320).step(40).name('videoW');
 		folder.add(guiOpts.general.video, 'h', 0, 240).step(30).name('videoH');
 		folder.add(guiOpts.general.video, 'frameRate', 1, 30).step(1);
 
-		// add 2 pointers
-		this._addDatGuiPointer(gui, 'right');
-		this._addDatGuiPointer(gui, 'left');
 		// try to save value but doesnt work
 		//gui.remember(guiOpts);		
 	}.bind(this));
