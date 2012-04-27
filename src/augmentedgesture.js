@@ -29,6 +29,8 @@ AugmentedGesture	= function(opts){
 */
 AugmentedGesture.prototype.destroy	= function(){
 	this.stop();
+	this.domElementRemove();
+	this.disableDatGui();
 }
 
 /**
@@ -231,7 +233,9 @@ AugmentedGesture.prototype.enableDatGui	= function(){
 	}.bind(this));
 	return this;	// for chained API
 };
-
+AugmentedGesture.prototype.disableDatGui	= function(){
+	this._datgui && this._datgui.destroy();
+}
 
 AugmentedGesture.prototype._addDatGuiPointer	= function(gui, pointerId){
 	var guiOpts	= this._opts;

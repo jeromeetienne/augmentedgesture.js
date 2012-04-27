@@ -15,9 +15,9 @@
 	//aGesture.start();
 	aGesture.enableDatGui();
 
-	//setTimeout(function(){
-	//	aGesture.destroy();
-	//}, 2000)
+	setTimeout(function(){
+		aGesture.destroy();
+	}, 2000)
 
 	// put the debug texture on top
 	//aGesture.domElementThumbnail();
@@ -32,14 +32,14 @@
 		pointerOpts.colorFilter.b	= {min:   0, max:  90};
 		aGesture.addPointer(pointerId, pointerOpts);
 
-		//var pointerId	= "left";
-		//var pointerOpts	= new AugmentedGesture.OptionPointer();
-		//pointerOpts.pointer.crossColor	= {r:    0, g: 255, b: 255};
-		//pointerOpts.colorFilter.r	= {min: 145, max: 255};
-		//pointerOpts.colorFilter.g	= {min:   0, max: 120};
-		//pointerOpts.colorFilter.b	= {min:   0, max: 190};
-		//aGesture.addPointer(pointerId, pointerOpts);
-	}, 100)
+		var pointerId	= "left";
+		var pointerOpts	= new AugmentedGesture.OptionPointer();
+		pointerOpts.pointer.crossColor	= {r:    0, g: 255, b: 255};
+		pointerOpts.colorFilter.r	= {min: 145, max: 255};
+		pointerOpts.colorFilter.g	= {min:   0, max: 120};
+		pointerOpts.colorFilter.b	= {min:   0, max: 190};
+		aGesture.addPointer(pointerId, pointerOpts);
+	}, 100);
 
 	//aGesture.bind('update', function(pointers){
 	//	console.log("update", pointers)
