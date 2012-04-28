@@ -253,12 +253,13 @@ AugmentedGesture.prototype._addDatGuiPointer	= function(pointerId){
 	var pointerOpts	= guiOpts.pointers[pointerId];
 	var mainFolder	= gui.addFolder("Pointer: "+pointerId);
 	// pointer folder
-	mainFolder.add(pointerOpts.pointer	, 'display');
-	mainFolder.add(pointerOpts.pointer	, 'coordSmoothV', 0, 1);
-	mainFolder.add(pointerOpts.pointer	, 'coordSmoothH', 0, 1);
-	mainFolder.add(pointerOpts.pointer.crossColor	, 'r', 0, 255).name('Cross ColorR');
-	mainFolder.add(pointerOpts.pointer.crossColor	, 'g', 0, 255).name('Cross ColorG');
-	mainFolder.add(pointerOpts.pointer.crossColor	, 'b', 0, 255).name('Cross ColorB');
+	var folder	= mainFolder.addFolder('Main');
+	folder.add(pointerOpts.pointer			, 'display');
+	folder.add(pointerOpts.pointer			, 'coordSmoothV', 0, 1);
+	folder.add(pointerOpts.pointer			, 'coordSmoothH', 0, 1);
+	folder.add(pointerOpts.pointer.crossColor	, 'r', 0, 255).name('Cross ColorR');
+	folder.add(pointerOpts.pointer.crossColor	, 'g', 0, 255).name('Cross ColorG');
+	folder.add(pointerOpts.pointer.crossColor	, 'b', 0, 255).name('Cross ColorB');
 	// display folder
 	var folder	= mainFolder.addFolder('Display');
 	//folder.open();
