@@ -21,7 +21,7 @@ AugmentedGesture	= function(opts){
 	canvas.height	= this._video.height	/4;
 
 	// gesture recognition
-	this._pointers		= {};	// to store pointers coordinates
+	this._pointersPos		= {};	// to store pointers coordinates
 };
 
 /**
@@ -204,8 +204,8 @@ AugmentedGesture.prototype._statsUpdate	= function(){
 //////////////////////////////////////////////////////////////////////////////////
 
 AugmentedGesture.prototype.addPointer	= function(pointerId, pointerOpts){
-	console.assert( !this._pointers[pointerId] );
-	this._pointers[pointerId]	= { x : this._canvas.width/2, y : this._canvas.height/2	};
+	console.assert( !this._pointersPos[pointerId] );
+	this._pointersPos[pointerId]	= { x : this._canvas.width/2, y : this._canvas.height/2	};
 
 	console.assert( !this._opts.pointers[pointerId] );
 	this._opts.pointers[pointerId]	= pointerOpts;
@@ -282,7 +282,7 @@ AugmentedGesture.prototype.enableDatGui	= function(){
 		folder.add(guiOpts.general.video, 'frameRate', 1, 30).step(1);
 
 		// init all the pointer already init
-		Object.keys(this._pointers).forEach(function(pointerId){
+		Object.keys(this._pointersPos).forEach(function(pointerId){
 			this._addDatGuiPointer(pointerId);
 		}.bind(this));
 
@@ -341,7 +341,7 @@ AugmentedGesture.prototype.domElement	= function(){
 }
 
 AugmentedGesture.prototype.pointers	= function(){
-	return this._pointers;
+	return this._pointersPos;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -435,23 +435,56 @@ AugmentedGesture.prototype._update	= function()
 	};
 	var processPointer	= function(pointerId){
 		var pointerOpts	= guiOpts.pointers[pointerId];
+		// do the image processing to get immediate pointer position
 		var pointerMax	= imageDataToPointer(imageData, pointerId);
 		// Display the cross
 		if( pointerOpts.disp.HLine )	ImgProc.hline(imageData, pointerMax.h.idx, 0, 255, 0);
 		if( pointerOpts.disp.VLine )	ImgProc.vline(imageData, pointerMax.v.idx, 0, 255, 0);
-		// move the pointer position
-		var pointerPos	= this._pointers[pointerId];
+
+		// is immediate pointer invalid
+		var pointerInv	= (pointerMax.h.max === 0 || pointerMax.v.max === 0 ) ? true : false;
+		// if immediate pointer is invalid, 
+		if( pointerInv ){
+			// if it was invalid already, do nothing
+			if( this._pointersPos[pointerId] === null )	return;
+			// mark the pointer as invalid
+			this._pointersPos[pointerId] = null;
+			// notify "mouseup"
+			this.trigger("mouseup."+pointerId)
+			return;
+		}
+		// from here, the pointer is valid
+		
+		// if the pointer was invalid before, notify mousedown, click
+		if( !this._pointersPos[pointerId] ){
+			this._pointersPos[pointerId]	= { x : pointerMax.h.max, y : pointerMax.v.max	};
+			// notify "mouseup"
+			this.trigger("mousedown."+pointerId);
+			// notify "click"
+			this.trigger("click."+pointerId);
+		}
+		
+		// update the pointer position
+		var pointerPos	= this._pointersPos[pointerId];
+		var oldPosX	= pointerPos.x;
+		var oldPosY	= pointerPos.y;
 		pointerPos.x	+= (pointerMax.h.idx - pointerPos.x) * pointerOpts.pointer.coordSmoothH;
 		pointerPos.y	+= (pointerMax.v.idx - pointerPos.y) * pointerOpts.pointer.coordSmoothV;
+		// display the pointer position
 		if( pointerOpts.pointer.display ){
 			var crossColor	= pointerOpts.pointer.crossColor;
 			ImgProc.vline(imageData, Math.floor(pointerPos.x), crossColor.r, crossColor.g, crossColor.b);
 			ImgProc.hline(imageData, Math.floor(pointerPos.y), crossColor.r, crossColor.g, crossColor.b);
 		}
+
+		// honor mousemove
+		if( oldPosX !== pointerPos.x || oldPosY !== pointerPos.y ){
+			this.trigger("mousemove."+pointerId, pointerPos);
+		}
 	}.bind(this);
 
 	// Process all pointers
-	Object.keys(this._pointers).forEach(function(pointerId){
+	Object.keys(this._pointersPos).forEach(function(pointerId){
 		//console.log("pointerId", pointerId)
 		processPointer(pointerId);
 	});
@@ -478,6 +511,6 @@ AugmentedGesture.prototype._update	= function()
 	// update the canvas
 	ctx.putImageData(imageData, 0, 0);
 	// notify the event
-	this.trigger('update', this._pointers);
+	//this.trigger('update', this._pointersPos);
 }
 

@@ -25,9 +25,24 @@
 
 	var pointerId	= "Green ball";
 	var pointerOpts	= new AugmentedGesture.OptionPointer();
+	aGesture.addPointer(pointerId, pointerOpts);
+
 	pointerOpts.pointer.crossColor	= {r:    0, g: 255, b:   0};
 	pointerOpts.colorFilter.r	= {min:   0, max:  54};
 	pointerOpts.colorFilter.g	= {min:  45, max: 255};
 	pointerOpts.colorFilter.b	= {min:   0, max:  75};
-	aGesture.addPointer(pointerId, pointerOpts);
+
+	aGesture.bind("mouseup."+pointerId, function(e){
+		console.log("mouseup", e)
+	})
+	aGesture.bind("mousedown."+pointerId, function(e){
+		console.log("mousedown", e)
+	})
+	aGesture.bind("mousemove."+pointerId, function(e){
+		console.log("mousemove", e)
+	})
+	aGesture.bind("click."+pointerId, function(e){
+		console.log("click", e)
+	})
+
 </script></body>
