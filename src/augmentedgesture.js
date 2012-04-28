@@ -19,7 +19,7 @@ AugmentedGesture	= function(opts){
 	this._canvas	= canvas;
 	canvas.width	= this._video.width	/4;
 	canvas.height	= this._video.height	/4;
-	
+
 	// gesture recognition
 	this._pointers		= {};	// to store pointers coordinates
 };
@@ -30,6 +30,7 @@ AugmentedGesture	= function(opts){
 AugmentedGesture.prototype.destroy	= function(){
 	this.stop();
 	this.domElementRemove();
+	this.statsRemove();
 	this.disableDatGui();
 }
 
@@ -155,6 +156,50 @@ AugmentedGesture.prototype.domElementRemove	= function(){
 }
 
 //////////////////////////////////////////////////////////////////////////////////
+//		stat.js injecter						//
+// TODO should that be elsewhere ?						//
+//////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * put the .domElement() as thumbnail.
+ * Usefull as feedback to the user
+*/
+AugmentedGesture.prototype.statsInsert	= function(){
+	var stats	= this._stats	= new Stats();
+	// Align top-left
+	stats.getDomElement().style.position	= 'absolute';
+	stats.getDomElement().style.left	= '0px';
+	stats.getDomElement().style.top		= '0px';
+	document.body.appendChild( stats.getDomElement() );
+	// for chained API
+	return this;
+}
+
+/**
+ * Remove the domElement from the DOM if it is attached
+*/
+AugmentedGesture.prototype.statsRemove	= function(){
+	// return now if this._stats isnt init
+	if( !this._stats )	return this;
+	// get domElement
+	var domElement	= this._stats.getDomElement();
+	// remove domElement from its parent if needed
+	domElement.parentNode && domElement.parentNode.removeChild(domElement);
+	// mark the object as removed
+	this._stats	= null;
+	// for chained API
+	return this;
+}
+
+/**
+ * Remove the domElement from the DOM if it is attached
+*/
+AugmentedGesture.prototype._statsUpdate	= function(){
+	if( !this._stats )	return;
+	this._stats.update();
+}
+
+//////////////////////////////////////////////////////////////////////////////////
 //		AddPointer							//
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -164,7 +209,7 @@ AugmentedGesture.prototype.addPointer	= function(pointerId, pointerOpts){
 
 	console.assert( !this._opts.pointers[pointerId] );
 	this._opts.pointers[pointerId]	= pointerOpts;
-		
+
 	this._datgui && this._addDatGuiPointer(pointerId);
 }
 
@@ -211,8 +256,8 @@ AugmentedGesture.OptionPointer	= function(){
 			max	: 255
 		},
 		minHist	: {
-			h	: 0,
-			v	: 0
+			h	: 5,
+			v	: 5
 		}
 	};
 	this.smooth	= {
@@ -331,7 +376,10 @@ AugmentedGesture.prototype._update	= function()
 
 	// if no data is ready, do nothing
 	if( this._video.readyState !== this._video.HAVE_ENOUGH_DATA )	return;
-	
+
+	// update fps stats
+	this._statsUpdate();
+
 	// update canvas size if needed
 	if( canvas.width  != guiOpts.general.video.w )	canvas.width	= guiOpts.general.video.w;
 	if( canvas.height != guiOpts.general.video.h )	canvas.height	= guiOpts.general.video.h;
@@ -399,7 +447,7 @@ AugmentedGesture.prototype._update	= function()
 			var crossColor	= pointerOpts.pointer.crossColor;
 			ImgProc.vline(imageData, Math.floor(pointerPos.x), crossColor.r, crossColor.g, crossColor.b);
 			ImgProc.hline(imageData, Math.floor(pointerPos.y), crossColor.r, crossColor.g, crossColor.b);
-		}		
+		}
 	}.bind(this);
 
 	// Process all pointers

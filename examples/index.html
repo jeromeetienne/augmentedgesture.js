@@ -8,11 +8,21 @@
 <script src="../src/augmentedgesture.js"></script>
 <script src="../src/gesturerecognition.js"></script>
 
+<script src="../vendor/Stats.js"></script>
+
+
 <!--<script src="../build/augmentedgesture.js"></script>
 -->
 <body><script>
 	var aGesture	= new AugmentedGesture().enableDatGui().start().domElementFullpage();
+
+	aGesture.statsInsert();
 	
+	//setTimeout(function(){
+	//	aGesture.destroy();
+	//}, 2000)
+
+
 	var pointerId	= "Green ball";
 	var pointerOpts	= new AugmentedGesture.OptionPointer();
 	pointerOpts.pointer.crossColor	= {r:    0, g: 255, b:   0};
