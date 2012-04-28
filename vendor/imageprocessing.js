@@ -62,10 +62,13 @@ ImgProc.luminance	= function(imageData, ratio)
 }
 
 /**
- * Duplicate the ImgProc
+ * Duplicate the ImgData
 */
 ImgProc.duplicate	= function(srcImgData, ctx)
 {
+	return ImgProc.copy(srcImgData, ctx.createImageData(srcImgData))
+
+/** old but tested version
 	var dstImgData	= ctx.createImageData(srcImgData);
 	var pSrc	= srcImgData.data;
 	var pDst	= dstImgData.data;
@@ -73,10 +76,11 @@ ImgProc.duplicate	= function(srcImgData, ctx)
 		pDst[i]	= pSrc[i];
 	}
 	return dstImgData;
+*/
 }
 
 /**
- * Duplicate the ImgProc
+ * Copy the ImgData
 */
 ImgProc.copy	= function(srcImgData, dstImgData)
 {
@@ -269,6 +273,13 @@ ImgProc.getMaxHistogram	= function(hist, imageData)
 	return {max: max, idx: idx}
 }
 
+ImgProc.filterHistogram	= function(hist, filterFn)
+{
+	for(var i = 0; i < hist.length; i++ ){
+		var val	= hist[i];
+		filterFn(val, i, hist);
+	}
+}
 
 //////////////////////////////////////////////////////////////////////////////////
 //										//

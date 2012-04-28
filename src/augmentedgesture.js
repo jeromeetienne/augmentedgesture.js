@@ -209,6 +209,10 @@ AugmentedGesture.OptionPointer	= function(){
 		b	: {
 			min	:   0,
 			max	: 255
+		},
+		minHist	: {
+			h	: 0,
+			v	: 0
 		}
 	};
 	this.smooth	= {
@@ -270,13 +274,15 @@ AugmentedGesture.prototype._addDatGuiPointer	= function(pointerId){
 	folder.add(pointerOpts.disp	, 'VLine');
 	// Threshold folder
 	var folder	= mainFolder.addFolder('Threshold');
-	//folder.open();
+	folder.open();
 	folder.add(pointerOpts.colorFilter.r	, 'min', 0, 255).name('red min');
 	folder.add(pointerOpts.colorFilter.r	, 'max', 0, 255).name('red max');
 	folder.add(pointerOpts.colorFilter.g	, 'min', 0, 255).name('green min');
 	folder.add(pointerOpts.colorFilter.g	, 'max', 0, 255).name('green max');
 	folder.add(pointerOpts.colorFilter.b	, 'min', 0, 255).name('blue min');
 	folder.add(pointerOpts.colorFilter.b	, 'max', 0, 255).name('blue max');
+	folder.add(pointerOpts.colorFilter.minHist	, 'h', 0, 20).name('minHistH');
+	folder.add(pointerOpts.colorFilter.minHist	, 'v', 0, 20).name('minHistV');
 	folder.add(pointerOpts.smooth		, 'hWidth', 0, 20).step(1);
 	folder.add(pointerOpts.smooth		, 'vWidth', 0, 20).step(1);
 }
@@ -344,18 +350,34 @@ AugmentedGesture.prototype._update	= function()
 		var pointerOpts	= guiOpts.pointers[pointerId];
 		ImgProc.threshold(tmpImgData, pointerOpts.colorFilter.r, pointerOpts.colorFilter.g, pointerOpts.colorFilter.b);
 		if( pointerOpts.disp.enable )	ImgProc.copy(tmpImgData, imageData);
+
+		////////////////////////////////////////////////////////////////
 		// horizontal coord X discovery
 		var hist	= ImgProc.computeHorizontalHistogram(tmpImgData, function(p, i){
 			return p[i+1] !== 0 ? true : false;
 		});
-		ImgProc.windowedAverageHistogram(hist, pointerOpts.smooth.vWidth);
+		ImgProc.windowedAverageHistogram(hist, pointerOpts.smooth.hWidth);
+		// keep only value greater than the minHist
+		var minHistVal	= pointerOpts.colorFilter.minHist.h;
+		ImgProc.filterHistogram(hist, function(val, idx, hist){
+			hist[idx]	= hist[idx] >= minHistVal ? hist[idx] : 0;
+		});
+		// get the maximum value of the histogram
 		var maxH	= ImgProc.getMaxHistogram(hist);
 		if( pointerOpts.disp.VHist )	ImgProc.displayHorizontalHistogram(imageData, hist);
-		// horizontal coord Y discovery
+
+		////////////////////////////////////////////////////////////////
+		// Vertical coord Y discovery
 		var hist	= ImgProc.computeVerticalHistogram(tmpImgData, function(p, i){
 			return p[i+1] !== 0 ? true : false;
 		});
-		ImgProc.windowedAverageHistogram(hist, pointerOpts.smooth.hWidth);
+		ImgProc.windowedAverageHistogram(hist, pointerOpts.smooth.vWidth);
+		// keep only value greater than the minHist
+		var minHistVal	= pointerOpts.colorFilter.minHist.v;
+		ImgProc.filterHistogram(hist, function(val, idx, hist){
+			hist[idx]	= hist[idx] >= minHistVal ? hist[idx] : 0;
+		});
+		// get the maximum value of the histogram
 		var maxV	= ImgProc.getMaxHistogram(hist);
 		if( pointerOpts.disp.HHist )	ImgProc.displayVerticalHistogram(imageData, hist);
 		return {
