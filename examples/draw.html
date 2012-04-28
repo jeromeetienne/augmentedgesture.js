@@ -1,0 +1,58 @@
+<!doctype html><title>augmented gesture examples</title>
+<script src="../vendor/requestanimationframe.js"></script>
+
+<script src="../vendor/imageprocessing.js"></script>
+
+<script src="../vendor/dat.gui/dat.gui.js"></script>
+
+<script src="../vendor/Stats.js"></script>
+
+<!--<script src="../src/augmentedgesture.js"></script>
+<script src="../src/gesturerecognition.js"></script>
+-->
+
+<script src="../build/augmentedgesture.js"></script>
+
+<body><script>
+	var canvas	= document.createElement('canvas');
+	var ctx		= canvas.getContext('2d');
+	canvas.width	= window.innerWidth;
+	canvas.height	= window.innerHeight;
+	canvas.style.position	= "absolute"
+	canvas.style.left	= 0;
+	canvas.style.top	= 0;
+	document.body.appendChild(canvas);
+
+	ctx.fillStyle = "rgb(0,0,0)";  
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+	var aGesture	= new AugmentedGesture().enableDatGui().start()
+	aGesture.statsInsert().domElementThumbnail();
+
+	var pointerId	= "Green ball";
+	var pointerOpts	= new AugmentedGesture.OptionPointer();
+	aGesture.addPointer(pointerId, pointerOpts);
+
+	pointerOpts.pointer.crossColor	= {r:    0, g: 255, b:   0};
+	pointerOpts.colorFilter.r	= {min:   0, max:  54};
+	pointerOpts.colorFilter.g	= {min:  45, max: 255};
+	pointerOpts.colorFilter.b	= {min:   0, max:  75};
+
+	aGesture.bind("mousemove."+pointerId, function(e){
+		var x	= (e.x / (320/4))*window.innerWidth;
+		var y	= (e.y / (240/4))*window.innerHeight;
+
+		ctx.globalAlpha = 0.025;
+		ctx.fillStyle = "rgb(0,0,0)";  
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+		ctx.fillStyle = "rgb(200,0,0)";  
+		ctx.globalAlpha = 1;
+
+		ctx.beginPath();
+		ctx.arc(x, y, 30, 0, Math.PI*2, true); 
+		ctx.closePath();
+		ctx.fill();
+	})
+
+</script></body>
