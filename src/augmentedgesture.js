@@ -384,6 +384,9 @@ AugmentedGesture.prototype._update	= function()
 	if( canvas.width  != guiOpts.general.video.w )	canvas.width	= guiOpts.general.video.w;
 	if( canvas.height != guiOpts.general.video.h )	canvas.height	= guiOpts.general.video.h;
 	
+	var canvasW	= canvas.width;
+	var canvasH	= canvas.height;
+	
 	// draw video into a canvas2D
 	ctx.drawImage(this._video, 0, 0, canvas.width, canvas.height);
 
@@ -457,24 +460,24 @@ AugmentedGesture.prototype._update	= function()
 
 		// if the pointer was invalid before, notify mousedown, click
 		if( !this._pointersPos[pointerId] ){
-			this._pointersPos[pointerId]	= { x : pointerMax.h.idx, y : pointerMax.v.idx	};
+			this._pointersPos[pointerId]	= { x : pointerMax.h.idx/canvasW, y : pointerMax.v.idx/canvasH	};
 			// notify "mouseup"
-			this.trigger("mousedown."+pointerId);
+			this.trigger("mousedown."+pointerId, this._pointersPos[pointerId]);
 			// notify "click"
-			this.trigger("click."+pointerId);
+			this.trigger("click."+pointerId, this._pointersPos[pointerId]);
 		}
 
 		// update the pointer position
 		var pointerPos	= this._pointersPos[pointerId];
 		var oldPosX	= pointerPos.x;
 		var oldPosY	= pointerPos.y;
-		pointerPos.x	+= (pointerMax.h.idx - pointerPos.x) * pointerOpts.pointer.coordSmoothH;
-		pointerPos.y	+= (pointerMax.v.idx - pointerPos.y) * pointerOpts.pointer.coordSmoothV;
+		pointerPos.x	+= (pointerMax.h.idx/canvasW - pointerPos.x) * pointerOpts.pointer.coordSmoothH;
+		pointerPos.y	+= (pointerMax.v.idx/canvasH - pointerPos.y) * pointerOpts.pointer.coordSmoothV;
 		// display the pointer position
 		if( pointerOpts.pointer.display ){
 			var crossColor	= pointerOpts.pointer.crossColor;
-			ImgProc.vline(imageData, Math.floor(pointerPos.x), crossColor.r, crossColor.g, crossColor.b);
-			ImgProc.hline(imageData, Math.floor(pointerPos.y), crossColor.r, crossColor.g, crossColor.b);
+			ImgProc.vline(imageData, Math.floor(pointerPos.x*canvasW), crossColor.r, crossColor.g, crossColor.b);
+			ImgProc.hline(imageData, Math.floor(pointerPos.y*canvasH), crossColor.r, crossColor.g, crossColor.b);
 		}
 
 		// honor mousemove

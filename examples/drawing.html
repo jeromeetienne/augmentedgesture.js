@@ -7,12 +7,11 @@
 
 <script src="../vendor/Stats.js"></script>
 
-<!--<script src="../src/augmentedgesture.js"></script>
+<script src="../src/augmentedgesture.js"></script>
 <script src="../src/gesturerecognition.js"></script>
+
+<!--<script src="../build/augmentedgesture.js"></script>
 -->
-
-<script src="../build/augmentedgesture.js"></script>
-
 <body><script>
 	var canvas	= document.createElement('canvas');
 	var ctx		= canvas.getContext('2d');
@@ -34,13 +33,12 @@
 	aGesture.addPointer(pointerId, pointerOpts);
 
 	pointerOpts.pointer.crossColor	= {r:    0, g: 255, b:   0};
-	pointerOpts.colorFilter.r	= {min:   0, max:  54};
-	pointerOpts.colorFilter.g	= {min:  45, max: 255};
-	pointerOpts.colorFilter.b	= {min:   0, max:  75};
-
+	pointerOpts.colorFilter.r	= {min:   0, max: 110};
+	pointerOpts.colorFilter.g	= {min: 110, max: 255};
+	pointerOpts.colorFilter.b	= {min: 110, max: 255};
 	aGesture.bind("mousemove."+pointerId, function(e){
-		var x	= (e.x / (320/4))*window.innerWidth;
-		var y	= (e.y / (240/4))*window.innerHeight;
+		var x	= e.x*window.innerWidth;
+		var y	= e.y*window.innerHeight;
 
 		ctx.globalAlpha = 0.025;
 		ctx.fillStyle = "rgb(0,0,0)";  

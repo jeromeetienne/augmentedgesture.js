@@ -21,7 +21,6 @@
 	var aGesture	= new AugmentedGesture().enableDatGui().start().domElementThumbnail();
 	// create a tQuery.World
 	var world	= tQuery.createWorld().boilerplate().start();
-	world.renderer().domElement.style.zIndex	= 10000;
 	world.removeCameraControls();
 
 	// some constants for players
@@ -54,17 +53,13 @@
 			pointerOpts.colorFilter.b	= {min:  60, max: 200};						
 		}
 		// bind aGesture 'mousemove' and update object3d position with it
-		aGesture.bind("mousemove."+pointerId, function(e){
-			var x	= e.x / (320/4);
-			var y	= e.y / (240/4);
-			
-			object3d.get(0).position.y	= -(-racketRangeY/2 + y*racketRangeY);
+		aGesture.bind("mousemove."+pointerId, function(event){
+			object3d.get(0).position.y	= -(-racketRangeY/2 + event.y*racketRangeY);
 		});
-
 	})
 
 	// constant for the field
-	var fieldW	= 2.7;
+	var fieldW	= 3;
 	var fieldH	= 1.8;
 	// constant for the ball
 	var ballRadius	= 1/5;

@@ -28,9 +28,9 @@
 	aGesture.addPointer(pointerId, pointerOpts);
 
 	pointerOpts.pointer.crossColor	= {r:    0, g: 255, b:   0};
-	pointerOpts.colorFilter.r	= {min:   0, max:  54};
-	pointerOpts.colorFilter.g	= {min:  45, max: 255};
-	pointerOpts.colorFilter.b	= {min:   0, max:  75};
+	pointerOpts.colorFilter.r	= {min:   0, max: 110};
+	pointerOpts.colorFilter.g	= {min: 110, max: 255};
+	pointerOpts.colorFilter.b	= {min: 110, max: 255};
 
 	aGesture.bind("mouseup."+pointerId, function(e){
 		console.log("mouseup", e)
