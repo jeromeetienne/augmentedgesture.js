@@ -457,7 +457,7 @@ AugmentedGesture.prototype._update	= function()
 		
 		// if the pointer was invalid before, notify mousedown, click
 		if( !this._pointersPos[pointerId] ){
-			this._pointersPos[pointerId]	= { x : pointerMax.h.max, y : pointerMax.v.max	};
+			this._pointersPos[pointerId]	= { x : pointerMax.h.idx, y : pointerMax.v.idx	};
 			// notify "mouseup"
 			this.trigger("mousedown."+pointerId);
 			// notify "click"
