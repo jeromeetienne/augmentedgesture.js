@@ -29,9 +29,6 @@
 	var racketW	= 0.25*0.5;
 	var racketH	= 1.00*0.5;
 	var racketRangeY= 2;
-	var fieldW	= 2.7;
-	var fieldH	= 1.8;
-	var ballRadius	= 1/5;
 	
 	
 	Object.keys(players).forEach(function(playerId){
@@ -65,10 +62,46 @@
 
 	})
 
-	console.log("players", players)
-	var ball	= new Ball();
+	var fieldW	= 2.7;
+	var fieldH	= 1.8;
+	var ballRadius	= 1/5;
+	var angle	= Math.random()*Math.PI*2;
+	var ballVelX	= Math.cos(angle)*0.03;
+	var ballVelY	= Math.sin(angle)*0.03;
+	var ballObject3d= tQuery.createSphere().addTo(world).scaleBy(ballRadius);
 	world.loop().hook(function(){
-		ball.update();
+		// get ball position
+		var position	= ballObject3d.get(0).position;
+		// update position
+		position.x	+= ballVelX;	
+		position.y	+= ballVelY;
+	
+		// bounce the ball if it reach the border
+		if( position.x < -fieldW/2 )	ballVelX	*= -1;
+		if( position.x > +fieldW/2 )	ballVelX	*= -1;
+		if( position.y < -fieldH/2 )	ballVelY	*= -1;
+		if( position.y > +fieldH/2 )	ballVelY	*= -1;
+		
+		// get the boundaries
+		position.x	= Math.max(position.x, -fieldW/2);
+		position.x	= Math.min(position.x, +fieldW/2);
+		position.y	= Math.max(position.y, -fieldH/2);
+		position.y	= Math.min(position.y, +fieldH/2);
+		
+		['right', 'left'].forEach(function(playerId){
+			var object3d	= players[playerId].object3d;
+			var racketX	= object3d.get(0).position.x;
+			var racketY	= object3d.get(0).position.y;
+			var mayHitLeft	= (position.x+ballRadius/2) >= (racketX-racketW/2);
+			var mayHitRight	= (position.x-ballRadius/2) <= (racketX+racketW/2);
+			var mayHitTop	= (position.y+ballRadius/2) >= (racketY-racketH/2);
+			var mayHitBottom= (position.y-ballRadius/2) <= (racketY+racketH/2);
+			if( mayHitLeft && mayHitRight && mayHitTop && mayHitBottom ){
+				ballVelX	*= -1;
+				var deltaX	= racketW/2 + ballRadius/2;
+				position.x	= racketX + (playerId === 'right'? -deltaX : +deltaX);
+			}		
+		});
 	});
 
 
