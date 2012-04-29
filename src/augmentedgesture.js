@@ -454,7 +454,7 @@ AugmentedGesture.prototype._update	= function()
 			return;
 		}
 		// from here, the pointer is valid
-		
+
 		// if the pointer was invalid before, notify mousedown, click
 		if( !this._pointersPos[pointerId] ){
 			this._pointersPos[pointerId]	= { x : pointerMax.h.idx, y : pointerMax.v.idx	};
@@ -463,7 +463,7 @@ AugmentedGesture.prototype._update	= function()
 			// notify "click"
 			this.trigger("click."+pointerId);
 		}
-		
+
 		// update the pointer position
 		var pointerPos	= this._pointersPos[pointerId];
 		var oldPosX	= pointerPos.x;
