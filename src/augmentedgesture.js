@@ -100,6 +100,11 @@ AugmentedGesture.prototype.stop	= function(){
 	return this;
 };
 
+
+AugmentedGesture.prototype.opts	= function(){
+	return this._opts;
+}
+
 //////////////////////////////////////////////////////////////////////////////////
 //		domElement injecter						//
 // TODO should that be elsewhere ?						//
