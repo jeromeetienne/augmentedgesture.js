@@ -37,6 +37,6 @@ minifyBundle: buildBundle
 		-d "output_format=text&output_info=compiled_code&compilation_level=SIMPLE_OPTIMIZATIONS" \
 		http://closure-compiler.appspot.com/compile		\
 		>> build/augmentedgesture-bundle.min.js
-	@echo size minified + gzip is `gzip -c build/augmentedgesture.min.js | wc -c` byte
+	@echo size minified + gzip is `gzip -c build/augmentedgesture-bundle.min.js | wc -c` byte
 	
 .PHONY: build minify

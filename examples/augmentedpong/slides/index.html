@@ -32,23 +32,16 @@
 		
 		Jerome Etienne
 	</article>
-	<article data-markdown>
-		### Augmented Reality Pong with WebGL
-
-		#### webgl + augmented reality
-		#### *+*
-		#### game classic + live coding
-		#### *=>* augmented pong in 3D
-	</article>
 <!-- ****************************************************************************
 		presentation
 ********************************************************************************* -->
 	<article data-markdown>
-		### Intro
+		### Augmented Reality 3D Pong
 
-		#### webgl + augmented reality + game classic
-		#### => augmented pong in 3D
-		
+		#### augmented reality + webgl 
+		#### *+*
+		#### game classic + live coding
+		#### *=>* augmented pong in WebGL
 		* lots of fun with technology too :)
 	</article>
 	<article data-markdown>
@@ -74,9 +67,16 @@
 	</article>
 	<article data-markdown>
 		### Libraries
-		
-		* augmentedgesture.js for augmented gesture
-		* tquery.js for 3D
+
+		#### Why ? code size
+		* helps produce very short code
+		* *only 100 lines* to do that
+
+		#### Which helpers
+		* [augmentedgesture.js](https://github.com/jeromeetienne/augmentedgesture.js) for augmented gesture
+		* [imageprocessing.js](https://github.com/jeromeetienne/imageprocessing.js) for image processing
+		* [tquery.js](https://github.com/jeromeetienne/tquery) for 3D - thin lib on top of [three.js](https://github.com/mrdoob/three.js/) marvel
+		* all MIT license
 	</article>
 	<article data-markdown>
 		## install augmented gesture
@@ -233,6 +233,7 @@
 		```
 		var racketW	= 0.25*0.5;
 		var racketH	= 1.00*0.5;
+		var racketRangeY= 2;
 		```
 		#### after **augmented gesture init**
 		```
@@ -422,8 +423,8 @@
 	<article data-markdown>
 		### Rescource
 		
+		* [tquery.js](https://github.com/jeromeetienne/tquery) for 3D - thin lib on top of [three.js](https://github.com/mrdoob/three.js/) marvel
 		* [webrtc](http://www.webrtc.org/)/[getusermedia](http://dev.opera.com/articles/view/playing-with-html5-video-and-getusermedia-support/)
-		* [tQuery.js](http://jeromeetienne.github.com/tquery/) 
 		* [imageprocessing.js](http://jeromeetienne.github.com/imageprocessing.js/)
 		* extract pointer events with [augmentedgesture.js](http://jeromeetienne.github.com/augmentedgesture.js/)
 	</article>

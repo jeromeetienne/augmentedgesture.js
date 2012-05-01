@@ -1,6 +1,10 @@
 <!doctype html><title>Augmented Pong</title>
+<!--
 <script src="../../build/augmentedgesture-bundle.js"></script>
 <script src="tquery-bundle.js"></script>
+-->
+<script src="https://raw.github.com/jeromeetienne/augmentedgesture.js/master/build/augmentedgesture-bundle.min.js"></script>
+<script src="https://raw.github.com/jeromeetienne/tquery/dev/build/tquery-bundle.min.js"></script>
 <body><script>
 	// create a AugmentedGesture
 	var aGesture	= new AugmentedGesture().enableDatGui().start().domElementThumbnail();
@@ -20,22 +24,22 @@
 		var player	= players[playerId];
 		// create tQuery.Object3D for a racket
 		var object3d	= tQuery.createCube().addTo(world).scale(0.25,1,0.5).scaleBy(0.5);
-		player.object3d	= object3d;
 		object3d.translateX(1.3 * (playerId === "right" ? +1 : -1));
+		player.object3d	= object3d;
 		// add a pointer for this player
 		var pointerOpts	= new AugmentedGesture.OptionPointer();
 		aGesture.addPointer(playerId, pointerOpts);
 		// tune the pointer for each player
 		if( playerId === 'right' ){
 			pointerOpts.pointer.crossColor	= {r:  255, g:  50, b:   50};
-			pointerOpts.colorFilter.r	= {min: 160, max: 255};
+			pointerOpts.colorFilter.r	= {min: 180, max: 255};
 			pointerOpts.colorFilter.g	= {min:   0, max: 255};
-			pointerOpts.colorFilter.b	= {min:   0, max: 100};			
+			pointerOpts.colorFilter.b	= {min:   0, max: 125};			
 		}else{
 			pointerOpts.pointer.crossColor	= {r:   50, g: 255, b:   50};
-			pointerOpts.colorFilter.r	= {min:   0, max: 145};
-			pointerOpts.colorFilter.g	= {min: 165, max: 255};
-			pointerOpts.colorFilter.b	= {min:  60, max: 200};						
+			pointerOpts.colorFilter.r	= {min:   0, max: 130};
+			pointerOpts.colorFilter.g	= {min: 150, max: 255};
+			pointerOpts.colorFilter.b	= {min:   0, max: 255};						
 		}
 		// bind aGesture 'mousemove' and update object3d position with it
 		aGesture.bind("mousemove."+playerId, function(event){

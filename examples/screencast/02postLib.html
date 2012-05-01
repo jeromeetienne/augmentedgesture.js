@@ -1,0 +1,12 @@
+<!DOCTYPE html><title>Augmented pong in webgl</title>
+<script src="../../build/augmentedgesture-bundle.js"></script>
+<script src="tquery-bundle.js"></script>
+<body><script>
+	// create a AugmentedGesture
+	var aGesture    = new AugmentedGesture().enableDatGui().start().domElementThumbnail();
+			
+	// init world of tQuery
+        var world	= tQuery.createWorld().boilerplate().start();	
+	// no camera controls is needed
+	world.removeCameraControls();
+</script></body>
