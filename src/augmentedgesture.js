@@ -518,7 +518,5 @@ AugmentedGesture.prototype._update	= function()
 */
 	// update the canvas
 	ctx.putImageData(imageData, 0, 0);
-	// notify the event
-	//this.trigger('update', this._pointersPos);
 }
 

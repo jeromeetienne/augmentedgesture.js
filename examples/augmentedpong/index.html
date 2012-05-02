@@ -3,8 +3,9 @@
 <script src="../../build/augmentedgesture-bundle.js"></script>
 <script src="tquery-bundle.js"></script>
 -->
-<script src="https://raw.github.com/jeromeetienne/augmentedgesture.js/master/build/augmentedgesture-bundle.min.js"></script>
-<script src="https://raw.github.com/jeromeetienne/tquery/dev/build/tquery-bundle.min.js"></script>
+
+<script src="http://jeromeetienne.github.com/augmentedgesture.js/build/augmentedgesture-bundle.min.js"></script>
+<script src="http://jeromeetienne.github.com/tquery/build/tquery-bundle.min.js"></script>
 <body><script>
 	// create a AugmentedGesture
 	var aGesture	= new AugmentedGesture().enableDatGui().start().domElementThumbnail();
@@ -15,7 +16,7 @@
 	world.removeCameraControls();
 
 	// some constants for players
-	var players	= { 'right' : {}, 'left': {} };	
+	var players	= { "right" : {}, "left": {} };	
 	var racketW	= 0.25*0.5;
 	var racketH	= 1.00*0.5;
 	var racketRangeY= 2;
@@ -30,18 +31,18 @@
 		var pointerOpts	= new AugmentedGesture.OptionPointer();
 		aGesture.addPointer(playerId, pointerOpts);
 		// tune the pointer for each player
-		if( playerId === 'right' ){
+		if( playerId === "right" ){
 			pointerOpts.pointer.crossColor	= {r:  255, g:  50, b:   50};
-			pointerOpts.colorFilter.r	= {min: 180, max: 255};
+			pointerOpts.colorFilter.r	= {min: 110, max: 255};
 			pointerOpts.colorFilter.g	= {min:   0, max: 255};
-			pointerOpts.colorFilter.b	= {min:   0, max: 125};			
+			pointerOpts.colorFilter.b	= {min:   0, max:  55};			
 		}else{
 			pointerOpts.pointer.crossColor	= {r:   50, g: 255, b:   50};
-			pointerOpts.colorFilter.r	= {min:   0, max: 130};
-			pointerOpts.colorFilter.g	= {min: 150, max: 255};
-			pointerOpts.colorFilter.b	= {min:   0, max: 255};						
+			pointerOpts.colorFilter.r	= {min:   0, max:  90};
+			pointerOpts.colorFilter.g	= {min:  60, max: 255};
+			pointerOpts.colorFilter.b	= {min:   0, max:  65};						
 		}
-		// bind aGesture 'mousemove' and update object3d position with it
+		// bind aGesture "mousemove" and update object3d position with it
 		aGesture.bind("mousemove."+playerId, function(event){
 			object3d.get(0).position.y	= -(-racketRangeY/2 + event.y*racketRangeY);
 		});
@@ -74,7 +75,7 @@
 		position.y	= Math.max(position.y, -fieldH/2);
 		position.y	= Math.min(position.y, +fieldH/2);
 		// check collision with each player racket
-		['right', 'left'].forEach(function(playerId){
+		["right", "left"].forEach(function(playerId){
 			// get tQuery.Object3D for this player
 			var object3d	= players[playerId].object3d;
 			// get the position in X and Y
@@ -90,7 +91,7 @@
 				// reaction of a collision
 				ballVelX	*= -1;
 				var deltaX	= racketW/2 + ballRadius/2;
-				position.x	= racketX + (playerId === 'right'? -deltaX : +deltaX);
+				position.x	= racketX + (playerId === "right"? -deltaX : +deltaX);
 			}
 		});
 	});

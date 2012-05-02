@@ -1,0 +1,54 @@
+<!doctype html><title>Augmented Reality Draw</title>
+<script src="http://jeromeetienne.github.com/augmentedgesture.js/build/augmentedgesture-bundle.min.js"></script>
+<body><script>
+	// CANVAS for display
+	// setup element and context
+	var canvas	= document.createElement('canvas');
+	var ctx		= canvas.getContext('2d');
+	canvas.width	= window.innerWidth;
+	canvas.height	= window.innerHeight;
+	// use css to position the element on screen
+	canvas.style.position	= "absolute"
+	canvas.style.left	= 0;
+	canvas.style.top	= 0;
+	// append the element to the body
+	document.body.appendChild(canvas);
+	// clear the screen
+	ctx.fillStyle = "rgb(0,0,0)";
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+	// AUGMENTED GESTURE
+	// init augmentedgesture.js
+	var aGesture	= new AugmentedGesture().enableDatGui().start()
+				.domElementThumbnail();
+	// create a pointer
+	var pointerId	= "Green ball";
+	var pointerOpts	= new AugmentedGesture.OptionPointer();
+	aGesture.addPointer(pointerId, pointerOpts);
+	// setup marker color
+	pointerOpts.colorFilter.r	= {min:   0, max:  60};
+	pointerOpts.colorFilter.g	= {min:   0, max: 255};
+	pointerOpts.colorFilter.b	= {min:  45, max: 255};
+	
+	
+	// AUGMENTEDGESTURE + CANVAS
+	// bind augmented gesture "mousemove" event for this pointerId
+	aGesture.bind("mousemove."+pointerId, function(event){
+		// convert event coord [0,1( into canvas coord
+		var x	= event.x * window.innerWidth;
+		var y	= event.y * window.innerHeight;
+		// clear the screen - use global alpha for fade out
+		ctx.globalAlpha = 0.025;
+		ctx.fillStyle = "rgb(0,0,0)";
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		// setup circle fill style
+		ctx.fillStyle = "rgb(200,0,0)";
+		ctx.globalAlpha = 1;
+		// draw a circle
+		ctx.beginPath();
+		var radius	= 30;
+		ctx.arc(x, y, radius, 0, Math.PI*2, true); 
+		ctx.closePath();
+		ctx.fill();
+	})
+</script></body>

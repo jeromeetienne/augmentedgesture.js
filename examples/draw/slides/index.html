@@ -26,7 +26,7 @@
 ********************************************************************************* -->
 	<article data-markdown>
 		
-		# Augmented Reality 3D Pong
+		# Augmented Reality Draw
 		
 		## Notes about screencast
 		
@@ -36,16 +36,16 @@
 		presentation
 ********************************************************************************* -->
 	<article data-markdown>
-		### Augmented Reality 3D Pong
+		### Augmented Reality Draw
 
-		#### augmented reality + webgl 
+		#### augmented reality + canvas2D 
 		#### *+*
-		#### game classic + live coding
-		#### *=>* augmented pong in WebGL
+		#### basic drawing + live coding
+		#### *=>* Augmented Reality Draw
 		* lots of fun with technology too :)
 	</article>
 	<article data-markdown>
-		# *Augmented Reality 3D Pong*
+		# *Augmented Reality Draw*
 		## (Show Demo [here](../))
 	</article>
 <!-- ****************************************************************************
@@ -54,29 +54,143 @@
 	<article data-markdown>
 		### table of content
 
-		* goal: make a augmented pong
-		* Initialistation: tquery for 3d/augmentedgesture.js for augmented reality 
-		* Code the players
-		* Code the ball
+		#### Goal
+		make a simple drawing program with augmented gesture
+		
+		#### Steps
+		1. Create Page
+		1. Init [Canvas 2D](http://www.w3.org/TR/2010/WD-2dcontext-20100304/)
+		1. Init [AugmentedGesture.js](https://github.com/jeromeetienne/augmentedgesture.js)
+		1. Bind Them Together
 	</article>
 <!-- ****************************************************************************
 		init libraries
 ********************************************************************************* -->
 	<article data-markdown>
-		# *Step 1*: Init libraries
+		# Lets's Create Page
 	</article>
 	<article data-markdown>
-		### Libraries
+		### Basic html page
+		```
+		 < !doctype html><title>augmented reality drawing</title>
+		 < body>< script>
+		 < /script>< /body>
+		```
+	</article>
+<!-- ****************************************************************************
+		init libraries
+********************************************************************************* -->
+	<article data-markdown>
+		# *Step 1*: Create a Canvas2D
+	</article>
+	<article data-markdown>
+		### blabla
+		
+		```
+		// CANVAS for display
+		// setup element and context
+		var canvas	= document.createElement('canvas');
+		var ctx		= canvas.getContext('2d');
+		canvas.width	= window.innerWidth;
+		canvas.height	= window.innerHeight;
+		```
+		
+		```
+		// use css to position the element on screen
+		canvas.style.position	= "absolute"
+		canvas.style.left	= 0;
+		canvas.style.top	= 0;
+		```
+	</article>		
+	<article data-markdown>
+		### blabla
+		
+		```
+		// append the element to the body
+		document.body.appendChild(canvas);
+		```
+		```
+		// clear the screen
+		ctx.fillStyle = "rgb(0,0,0)";
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		```
+	</article>
+	<article data-markdown>
+		# *Step 2*: Augmented Gesture
+	</article>
+	<article data-markdown>
+		### blabla
+		
+		```
+		// AUGMENTED GESTURE
+		// init augmentedgesture.js
+		var aGesture	= new AugmentedGesture().enableDatGui().start()
+					.domElementThumbnail();
+		```
+		
+		```
+		// create a pointer
+		var pointerId	= "Green ball";
+		var pointerOpts	= new AugmentedGesture.OptionPointer();
+		aGesture.addPointer(pointerId, pointerOpts);
+		```
+	</article>
+	<article data-markdown>
+		### blabla
 
-		#### Why ? code size
-		* helps produce very short code
-		* *only 100 lines* to do that
-
-		#### Which helpers
-		* [augmentedgesture.js](https://github.com/jeromeetienne/augmentedgesture.js) for augmented gesture
-		* [imageprocessing.js](https://github.com/jeromeetienne/imageprocessing.js) for image processing
-		* [tquery.js](https://github.com/jeromeetienne/tquery) for 3D - thin lib on top of [three.js](https://github.com/mrdoob/three.js/) marvel
-		* all MIT license
+		```
+		// setup marker color
+		pointerOpts.colorFilter.r	= {min:   0, max:  60};
+		pointerOpts.colorFilter.g	= {min:   0, max: 255};
+		pointerOpts.colorFilter.b	= {min:  45, max: 255};
+		```
+	</article>		
+	<article data-markdown>
+		# *Step 3*: Bind them Together
+	</article>
+	<article data-markdown>
+		### blabla
+		
+		```
+		// AUGMENTEDGESTURE + CANVAS
+		```
+		
+		```
+		// bind augmented gesture "mousemove" event for this pointerId
+		aGesture.bind("mousemove."+pointerId, function(event){
+			// convert event coord [0,1( into canvas coord
+			var x	= event.x * window.innerWidth;
+			var y	= event.y * window.innerHeight;
+		});
+		```
+	</article>
+	<article data-markdown>
+		### blabla
+		
+		```
+		// clear the screen - use global alpha for fade out
+		ctx.globalAlpha = 0.025;
+		ctx.fillStyle = "rgb(0,0,0)";
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		```
+	</article>
+	<article data-markdown>
+		### blabla
+		
+		```
+		// setup circle fill style
+		ctx.fillStyle = "rgb(200,0,0)";
+		ctx.globalAlpha = 1;
+		```
+		
+		```
+		// draw a circle
+		ctx.beginPath();
+		var radius	= 30;
+		ctx.arc(x, y, radius, 0, Math.PI*2, true); 
+		ctx.closePath();
+		ctx.fill();
+		```
 	</article>
 	<article data-markdown>
 		## install augmented gesture
