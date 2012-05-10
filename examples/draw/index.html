@@ -1,7 +1,9 @@
 <!doctype html><title>Augmented Reality Draw</title>
 <script src="http://jeromeetienne.github.com/augmentedgesture.js/build/augmentedgesture-bundle.min.js">
 </script>
-<body><script>
+<body>
+<canvas style="position: absolute; left: 0; right: 0"></canvas>	
+<script>
 	// CANVAS for display
 	// setup element and context
 	var canvas	= document.createElement('canvas');
@@ -14,6 +16,7 @@
 	canvas.style.top	= 0;
 	// append the element to the body
 	document.body.appendChild(canvas);
+	
 	// clear the screen
 	ctx.fillStyle = "rgb(0,0,0)";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -39,16 +42,17 @@
 		var x	= event.x * window.innerWidth;
 		var y	= event.y * window.innerHeight;
 		// clear the screen - use global alpha for fade out
+		// TODO explain this 
 		ctx.globalAlpha = 0.025;
 		ctx.fillStyle = "rgb(0,0,0)";
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 		// setup circle fill style
-		ctx.fillStyle = "rgb(200,0,0)";
 		ctx.globalAlpha = 1;
-		// draw a circle
+		ctx.fillStyle = "rgb(200,0,0)";
+		// draw a circle. the radius is 30
+		// TODO link to API spec
 		ctx.beginPath();
-		var radius	= 30;
-		ctx.arc(x, y, radius, 0, Math.PI*2, true); 
+		ctx.arc(x, y, 30, 0, Math.PI*2, true); 
 		ctx.closePath();
 		ctx.fill();
 	})
