@@ -1,27 +1,65 @@
+<!-- ## Drawing with Augmented Gesture -->
+
+<!-- This is annoted source of the ```draw``` example for [AugmentedGesture.js](https://github.com/jeromeetienne/augmentedgesture.js). -->
+<!-- The code is [here](https://github.com/jeromeetienne/augmentedgesture.js/tree/master/examples/draw) on github. -->
+<!-- The live demo can be found [here](http://jeromeetienne.github.com/augmentedgesture.js/examples/draw). -->
+<!-- It is a basic drawing program using augmented gesture to control the pencil. -->
+
+<!-- ### Motivation -->
+
+<!-- [Augmented Gesture](https://github.com/jeromeetienne/augmentedgesture.js) is a nice interface. I think it has potential. -->
+<!-- It got a nice warm feeling because you interact with your computer in a very physical way. -->
+<!-- Usually you move a mouse, so you move your harm of 20cm. -->
+<!-- If you are a developer, you type a lot on keyboards, so you move your fingers of a few centimeters. -->
+<!-- The physical effort is very limited. The relationship between me and my computer is mostly intellectual. -->
+<!-- [Augmented Gesture](https://github.com/jeromeetienne/augmentedgesture.js) make it a lot more physical. -->
+<!-- I even joked about it in this video "[Doom: a new workout for geek?](http://www.youtube.com/watch?v=hUYM93xaIgg)". -->
+
+<!-- But maybe there is more to it. -->
+<!-- Being more physical and less intellectual, it may means more instinctive, less to learn... The user feels confortable faster. -->
+<!-- So the user can focus on creativity and forget the tool. -->
+<!-- Children are good at that. -->
+
+<!-- All that to say, i like this new way to interact with computer, so im experimenting with it in various contextes. -->
+<!-- Here it is basic drawing. -->
+
+<!-- Clearly the drawing is very basic, so creavity may be limited by that :) -->
+<!-- Maybe it would be fun to link it with [harmony](http://mrdoob.com/projects/harmony/) by [mrdoob](http://mrdoob.com/). -->
+
+<!-- # Let's get started -->
+
+<!-- First we define a minimal html5 page. -->
+<!-- Then we include the code of [augmentedgesture.js](https://github.com/jeromeetienne/augmentedgesture.js). -->
+<!-- The '-bundle' file is augmentedgesture.js itself plus its dependancies bundled in a single file for convenience. -->
 <!doctype html><title>Augmented Reality Draw</title>
-<script src="http://jeromeetienne.github.com/augmentedgesture.js/build/augmentedgesture-bundle.min.js">
-</script>
+<script src="../../build/augmentedgesture-bundle.js"></script>
 <body>
-<canvas style="position: absolute; left: 0; right: 0"></canvas>	
+<!-- ## Create Canvas -->
+
+<!-- Now we gonna define the canvas 'drawing'. This is where we gonna draw. -->
+<!-- We add a pinch of css to put it on top/left. -->
+<canvas id="drawing" style="position: absolute; left: 0; top: 0;"></canvas>	
 <script>
-	// CANVAS for display
-	// setup element and context
-	var canvas	= document.createElement('canvas');
-	var ctx		= canvas.getContext('2d');
+	// ## Initialize Canvas Element
+
+	// First step is to get the [DOM Element](https://developer.mozilla.org/en/DOM/element)
+	// from the [document](https://developer.mozilla.org/en/DOM/document). We just [fetch
+	// it with its ID](https://developer.mozilla.org/En/DOM/Document.getElementById) 'drawing'.
+	var canvas	= document.getElementById('drawing')
+	// We set the resolution of the canvas. It will use the whole window,
+	// so we use ```window.innerWidth``` and ```.innerHeight```.
+	// TODO put a speech on the resolution/screensize difference on canvas
+	// "did you knew that ..." ?
 	canvas.width	= window.innerWidth;
 	canvas.height	= window.innerHeight;
-	// use css to position the element on screen
-	canvas.style.position	= "absolute"
-	canvas.style.left	= 0;
-	canvas.style.top	= 0;
-	// append the element to the body
-	document.body.appendChild(canvas);
-	
+	var ctx		= canvas.getContext('2d');
+
 	// clear the screen
 	ctx.fillStyle = "rgb(0,0,0)";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 	// AUGMENTED GESTURE
+	
 	// init augmentedgesture.js
 	var aGesture	= new AugmentedGesture().enableDatGui().start()
 				.domElementThumbnail();
@@ -33,7 +71,6 @@
 	pointerOpts.colorFilter.r	= {min:   0, max:  60};
 	pointerOpts.colorFilter.g	= {min:   0, max: 255};
 	pointerOpts.colorFilter.b	= {min:  45, max: 255};
-	
 	
 	// AUGMENTEDGESTURE + CANVAS
 	// bind augmented gesture "mousemove" event for this pointerId
@@ -49,11 +86,16 @@
 		// setup circle fill style
 		ctx.globalAlpha = 1;
 		ctx.fillStyle = "rgb(200,0,0)";
-		// draw a circle. the radius is 30
-		// TODO link to API spec
+
+		// Now the drawing itself. We gonna draw the circle using the
+		// [canvas path api](https://developer.mozilla.org/en/Drawing_Graphics_with_Canvas).
+		// the center of the circle is ```x, y``` with a radius of ```30```.
+		// A bit long, this api is quite verbose. Why not ```ctw.fillCircle(x,y, radius)``` you probably ask yourself.
+		// Well i dunno either. If you find out, please tell me :)
 		ctx.beginPath();
 		ctx.arc(x, y, 30, 0, Math.PI*2, true); 
 		ctx.closePath();
 		ctx.fill();
 	})
+	// Now we just end the page and we are done! :)
 </script></body>

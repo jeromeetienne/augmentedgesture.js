@@ -358,7 +358,7 @@ AugmentedGesture.prototype._videoCtor	= function(){
 	video.width	= 320;
 	video.height	= 240;
 	video.autoplay	= true;
-	navigator.webkitGetUserMedia('video', function(stream){
+	navigator.webkitGetUserMedia({video: true}, function(stream){
 		video.src	= webkitURL.createObjectURL(stream);
 		//console.log("pseudo object URL", video.src);
 	}, function(error){

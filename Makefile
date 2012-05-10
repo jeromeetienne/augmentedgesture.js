@@ -14,7 +14,6 @@ build: buildCore buildBundle
 buildCore:
 	echo				 > build/augmentedgesture.js
 	cat src/augmentedgesture.js	>> build/augmentedgesture.js
-	cat src/gesturerecognition.js	>> build/augmentedgesture.js
 
 buildBundle:
 	echo					 > build/augmentedgesture-bundle.js

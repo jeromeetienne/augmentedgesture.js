@@ -360,7 +360,7 @@ AugmentedGesture.prototype._videoCtor	= function(){
 	video.width	= 320;
 	video.height	= 240;
 	video.autoplay	= true;
-	navigator.webkitGetUserMedia('video', function(stream){
+	navigator.webkitGetUserMedia({video: true}, function(stream){
 		video.src	= webkitURL.createObjectURL(stream);
 		//console.log("pseudo object URL", video.src);
 	}, function(error){
@@ -520,30 +520,6 @@ AugmentedGesture.prototype._update	= function()
 */
 	// update the canvas
 	ctx.putImageData(imageData, 0, 0);
-}
-
-AugmentedGesture.GestureRecognition	= function(){
-	this._lastEvent	= null;
-};
-
-
-AugmentedGesture.GestureRecognition.prototype.update	= function(x, y, areaW, areaH)
-{
-	var sectionW	= areaW/3;
-	var sectionH	= areaH/3;
-
-	var event	= null;
-	if( x < 1*sectionW )		event	= 'left';
-	else if( x < 2*sectionW )	event	= 'middle';
-	else 				event	= 'right';
-
-//console.log("x", x, "areaW", areaW, "sectionW", sectionW, "event", event)
-	if( event === this._lastEvent ){
-		event	= null;
-	}else{
-		this._lastEvent	= event;
-	}
-	return event;
 }
 
 /**
