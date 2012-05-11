@@ -1,0 +1,28 @@
+<!doctype html><title>Example of tQuery.MD2Character</title>
+<script src="vendor/tquery-bundle.js"></script>
+<script src="vendor/tquery.norequirejs.js"></script>
+<script src="vendor/THREEx.KeyboardState.js"></script>
+<script src="vendor/tquery.keyboard.js"></script>
+<script src='vendor/tquery.checkerboard.js'></script>
+<script src='vendor/tquery.world.createfog.js'></script>
+
+<script src="../tquery.md2character.js"></script>
+<script src="../tquery.md2character.cameracontrols.js"></script>
+<script src="../tquery.md2character.ratamahatta.js"></script>
+<script src="../tquery.md2character.ratamahatta.keyboard.js"></script>
+
+
+<script src="../../../vendor/imageprocessing.js"></script>
+<script src="../../../vendor/dat.gui/dat.gui.js"></script>
+<script src="../../../src/augmentedgesture.js"></script>
+
+
+<script>
+document.addEventListener('keydown', function(event){
+    // if it is keydown on a arrow, prevent default
+    if( event.keyCode >= 37 && event.keyCode <= 40 ){
+        event.preventDefault();
+    }
+}, true);
+</script>
+<body><script src="./md2characterexample.js"></script></body>
