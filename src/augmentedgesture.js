@@ -34,10 +34,13 @@ AugmentedGesture.prototype.destroy	= function(){
 	this.disableDatGui();
 }
 
+navigator.getUserMedia	= navigator.getUserMedia || navigator.webkitGetUserMedia;
+URL			= URL || webkitURL;
+
 /**
  * equal to hasUserMedia
 */
-AugmentedGesture.hasUserMedia	= navigator.webkitGetUserMedia ? true : false;
+AugmentedGesture.hasUserMedia	= navigator.getUserMedia ? true : false;
 
 //////////////////////////////////////////////////////////////////////////////////
 //		MicroEvent							//
@@ -358,8 +361,9 @@ AugmentedGesture.prototype._videoCtor	= function(){
 	video.width	= 320;
 	video.height	= 240;
 	video.autoplay	= true;
-	navigator.webkitGetUserMedia({video: true}, function(stream){
-		video.src	= webkitURL.createObjectURL(stream);
+
+	navigator.getUserMedia({video: true}, function(stream){
+		video.src	= URL.createObjectURL(stream);
 		//console.log("pseudo object URL", video.src);
 	}, function(error){
 		alert('you got no WebRTC webcam');
