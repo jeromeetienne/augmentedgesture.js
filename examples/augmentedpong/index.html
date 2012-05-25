@@ -33,14 +33,14 @@
 		// tune the pointer for each player
 		if( playerId === "right" ){
 			pointerOpts.pointer.crossColor	= {r:  255, g:  50, b:   50};
-			pointerOpts.colorFilter.r	= {min: 110, max: 255};
-			pointerOpts.colorFilter.g	= {min:   0, max: 255};
-			pointerOpts.colorFilter.b	= {min:   0, max:  55};			
+			pointerOpts.colorFilter.r	= {min:  97, max: 255};
+			pointerOpts.colorFilter.g	= {min:  10, max: 255};
+			pointerOpts.colorFilter.b	= {min:   0, max:  43};			
 		}else{
 			pointerOpts.pointer.crossColor	= {r:   50, g: 255, b:   50};
-			pointerOpts.colorFilter.r	= {min:   0, max: 130};
-			pointerOpts.colorFilter.g	= {min: 145, max: 255};
-			pointerOpts.colorFilter.b	= {min:  60, max: 210};						
+			pointerOpts.colorFilter.r	= {min:   0, max:  83};
+			pointerOpts.colorFilter.g	= {min: 126, max: 255};
+			pointerOpts.colorFilter.b	= {min:   0, max: 255};
 		}
 		// bind aGesture "mousemove" and update object3d position with it
 		aGesture.bind("mousemove."+playerId, function(event){
