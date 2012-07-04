@@ -1,11 +1,11 @@
 <!doctype html><title>Augmented Pong</title>
-<!--
 <script src="../../build/augmentedgesture-bundle.js"></script>
 <script src="tquery-bundle.js"></script>
--->
 
+<!--
 <script src="http://jeromeetienne.github.com/augmentedgesture.js/build/augmentedgesture-bundle.min.js"></script>
 <script src="http://jeromeetienne.github.com/tquery/build/tquery-bundle.min.js"></script>
+-->
 <body><script>
 	// create a AugmentedGesture
 	var aGesture	= new AugmentedGesture().enableDatGui().start().domElementThumbnail();
@@ -39,8 +39,8 @@
 		}else{
 			pointerOpts.pointer.crossColor	= {r:   50, g: 255, b:   50};
 			pointerOpts.colorFilter.r	= {min:   0, max:  83};
-			pointerOpts.colorFilter.g	= {min: 126, max: 255};
-			pointerOpts.colorFilter.b	= {min:   0, max: 255};
+			pointerOpts.colorFilter.g	= {min:  50, max: 255};
+			pointerOpts.colorFilter.b	= {min:   0, max:  55};
 		}
 		// bind aGesture "mousemove" and update object3d position with it
 		aGesture.bind("mousemove."+playerId, function(event){
